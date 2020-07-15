@@ -20,7 +20,16 @@ module.exports.loop = function () {
                     var err = spawn.room.createConstructionSite(24, 30, STRUCTURE_TOWER);
                     console.log('createConstructionSite: ' + err);
                 } else {
-                    //console.log('Have a tower: ' + towers[0]);
+                    var closestDamagedStructure = towers[0].pos.findClosestByRange(FIND_STRUCTURES, {
+                        filter: (structure) => structure.hits < structure.hitsMax });
+                    if(closestDamagedStructure) {
+                        towers[0].repair(closestDamagedStructure);
+                    }
+                    var closestHostile = towers[0].pos.findClosestByRange(FIND_HOSTILE_CREEPS);
+                    if (closestHostile) {
+                        towers[0].attack(closestHostile);
+                    }
+                    strategySpawn.createMissing('harvester', 2);
                 }
             }
         }
