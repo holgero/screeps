@@ -12,10 +12,13 @@ var strategySpawn = {
             return 0;
         } else {
             if (creeps.length < desiredCreeps) {
-                if (spawn.energy > 200) {
+                var err = spawn.spawnCreep([WORK,CARRY,MOVE], 'whatever', {memory: {role: role}, dryRun: true});
+                if (!err) {
                     var newName = _.capitalize(role) + Game.time;
                     console.log('Spawning new ' + role + ': ' + newName);
                     spawn.spawnCreep([WORK,CARRY,MOVE], newName, {memory: {role: role}});
+                } else if (err != ERR_NOT_ENOUGH_ENERGY) {
+                    console.log('Cant spawn a new creep: ' + err);
                 }
                 return 0;
             }
