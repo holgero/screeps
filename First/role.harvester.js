@@ -18,12 +18,15 @@ var roleHarvester = {
                     }
             });
             if(targets.length > 0) {
-                if(creep.transfer(targets[0], RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
+                if (creep.transfer(targets[0], RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
                     creep.moveTo(targets[0], {visualizePathStyle: {stroke: '#ffffff'}});
                 }
             } else {
-                creep.say('park');
-                creep.moveTo(Game.spawns['Spawn1']);
+                var spawn = Game.spawns['Spawn1'];
+                if (creep.transfer(spawn, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
+                    creep.say('park');
+                    creep.moveTo(spawn, {visualizePathStyle: {stroke: '#ffffff'}});
+                }
             }
         }
 	}
