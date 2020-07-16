@@ -13,10 +13,10 @@ module.exports.loop = function () {
     }
 
     if (strategySpawn.createMissing('harvester', 1)) {
-        if (strategySpawn.createMissing('upgrader', 1)) {
+        if (strategySpawn.createMissing('upgrader', 2)) {
             var spawn = Game.spawns['Spawn1'];
             if (strategDevelop.developRoom(2, STRUCTURE_EXTENSION, spawn.room.getPositionAt(spawn.pos.x, spawn.pos.y + 5))) {
-                if (strategySpawn.createMissing('builder', 1)) {
+                if (strategySpawn.createMissing('builder', 2)) {
                     if (strategDevelop.developRoom(3, STRUCTURE_TOWER, spawn.room.getPositionAt(spawn.pos.x, spawn.pos.y + 10))) {
                         var towers = spawn.room.find(FIND_MY_STRUCTURES, { filter: {structureType: STRUCTURE_TOWER}});
                         if (towers.length > 0) {
