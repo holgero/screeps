@@ -23,9 +23,11 @@ var strategyDevelopment = {
             targets.forEach(function(source) {
                 var path = room.findPath(from, source.pos, { ignoreCreeps: true, ignoreRoads: true, swampCost: 1});
                 path.forEach(function(pos) {
-                    var err = room.createConstructionSite(pos.x, pos.y, STRUCTURE_ROAD);
-                    if (err) {
-                        console.log('Failed to place road at (' + pos.x + ',' + pos.y + '): ' + err);
+                    if (pos.x != source.pos.x || pos.y != source.pos.y) {
+                        var err = room.createConstructionSite(pos.x, pos.y, STRUCTURE_ROAD);
+                        if (err) {
+                            console.log('Failed to place road at (' + pos.x + ',' + pos.y + '): ' + err);
+                        }
                     }
                 });
                 room.memory.roadsCreated = 1;
