@@ -2,6 +2,7 @@ var roleHarvester = require('role.harvester');
 var roleUpgrader = require('role.upgrader');
 var roleBuilder = require('role.builder');
 var strategySpawn = require('strategy.autospawn');
+var strategDevelop = require('strategy.development');
 
 module.exports.loop = function () {
     for(var name in Memory.creeps) {
@@ -14,13 +15,10 @@ module.exports.loop = function () {
     if (strategySpawn.createMissing('harvester', 1)) {
         if (strategySpawn.createMissing('upgrader', 1)) {
             var spawn = Game.spawns['Spawn1'];
-            if (spawn.room.controller.level > 2) {
+            if (strategDevelop.developRoom(3, STRUCTURE_TOWER, spawn.room.getPositionAt(spawn.pos.x, spawn.pos.y + 5))) {
                 if (strategySpawn.createMissing('builder', 1)) {
                     var towers = spawn.room.find(FIND_MY_STRUCTURES, { filter: {structureType: STRUCTURE_TOWER}});
-                    if (towers.length < 1) {
-                        var err = spawn.room.createConstructionSite(24, 30, STRUCTURE_TOWER);
-                        console.log('createConstructionSite: ' + err);
-                    } else {
+                    if (towers.length > 0) {
                         var closestDamagedStructure = towers[0].pos.findClosestByRange(FIND_STRUCTURES, {
                             filter: (structure) => structure.hits < structure.hitsMax });
                         if(closestDamagedStructure) {
