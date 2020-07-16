@@ -32,6 +32,15 @@ var roleBuilder = {
             if (!creep.memory.sourceIndex || creep.memory.sourceIndex >= sources.length) {
                 creep.memory.sourceIndex = 0;
             }
+            var hostiles = creep.room.find(FIND_HOSTILE_CREEPS);
+            if (hostiles.length) {
+                while (sources[creep.memory.sourceIndex].pos.inRangeTo(hostiles[0], 4)) {
+                    creep.memory.sourceIndex++;
+                }
+            }
+            if (creep.memory.sourceIndex >= sources.length) {
+                creep.memory.sourceIndex = 0;
+            }
             if(creep.harvest(sources[creep.memory.sourceIndex]) == ERR_NOT_IN_RANGE) {
                 creep.moveTo(sources[creep.memory.sourceIndex], {visualizePathStyle: {stroke: '#ffaa00'}});
             }
