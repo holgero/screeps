@@ -13,23 +13,25 @@ module.exports.loop = function () {
 
     if (strategySpawn.createMissing('harvester', 1)) {
         if (strategySpawn.createMissing('upgrader', 1)) {
-            if (strategySpawn.createMissing('builder', 1)) {
-                var spawn = Game.spawns['Spawn1'];
-                var towers = spawn.room.find(FIND_MY_STRUCTURES, { filter: {structureType: STRUCTURE_TOWER}});
-                if (towers.length < 1) {
-                    var err = spawn.room.createConstructionSite(24, 30, STRUCTURE_TOWER);
-                    console.log('createConstructionSite: ' + err);
-                } else {
-                    var closestDamagedStructure = towers[0].pos.findClosestByRange(FIND_STRUCTURES, {
-                        filter: (structure) => structure.hits < structure.hitsMax });
-                    if(closestDamagedStructure) {
-                        towers[0].repair(closestDamagedStructure);
+            var spawn = Game.spawns['Spawn1'];
+            if (spawn.room.controller.level > 2) {
+                if (strategySpawn.createMissing('builder', 1)) {
+                    var towers = spawn.room.find(FIND_MY_STRUCTURES, { filter: {structureType: STRUCTURE_TOWER}});
+                    if (towers.length < 1) {
+                        var err = spawn.room.createConstructionSite(24, 30, STRUCTURE_TOWER);
+                        console.log('createConstructionSite: ' + err);
+                    } else {
+                        var closestDamagedStructure = towers[0].pos.findClosestByRange(FIND_STRUCTURES, {
+                            filter: (structure) => structure.hits < structure.hitsMax });
+                        if(closestDamagedStructure) {
+                            towers[0].repair(closestDamagedStructure);
+                        }
+                        var closestHostile = towers[0].pos.findClosestByRange(FIND_HOSTILE_CREEPS);
+                        if (closestHostile) {
+                            towers[0].attack(closestHostile);
+                        }
+                        strategySpawn.createMissing('harvester', 2);
                     }
-                    var closestHostile = towers[0].pos.findClosestByRange(FIND_HOSTILE_CREEPS);
-                    if (closestHostile) {
-                        towers[0].attack(closestHostile);
-                    }
-                    strategySpawn.createMissing('harvester', 2);
                 }
             }
         }
