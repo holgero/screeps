@@ -48,6 +48,32 @@ var strategySpawn = {
             }
             return 1;
         }
+    },
+    createContainerHarvesters: function() {
+        var spawn = Game.spawns['Spawn1'];
+        if (!spawn.spawning) {
+            var role = 'harvester2';
+            var creeps = _.filter(Game.creeps, (creep) => creep.memory.role == role);
+            var containers = spawn.room.find(FIND_STRUCTURES, { filter: {structureType: STRUCTURE_CONTAINER}});
+            if (creeps.length < containers.length) {
+                var body;
+                if (spawn.room.controller.level < 2) {
+                    body = [WORK, MOVE];
+                } else {
+                    body = [WORK, WORK, MOVE];
+                }
+                var err = spawn.spawnCreep(body, 'whatever', {memory: {role: role}, dryRun: true});
+                if (!err) {
+                    var newName = _.capitalize(role) + Game.time;
+                    console.log('Spawning new ' + role + ': ' + newName);
+                    spawn.spawnCreep(body, newName, {memory: {role: role}});
+                } else {
+                    if (err != ERR_NOT_ENOUGH_ENERGY) {
+                        console.log('Cant spawn a new creep with body ' + body + ': ' + err);
+                    }
+                }
+            }
+        }
     }
 }
 

@@ -1,4 +1,18 @@
 var creepCommons = {
+    getFlatTerrain: function(pos) {
+        var room = Game.rooms[pos.roomName];
+        var terrain = room.getTerrain();
+        var flatPlaces = [];
+        for (var x = pos.x - 1; x <= pos.x + 1; x++) {
+            for (var y = pos.y - 1; y <= pos.y + 1; y++) {
+                if (terrain.get(x,y) != TERRAIN_MASK_WALL) {
+                    flatPlaces.push(room.getPositionAt(x,y));
+                }
+            }
+        }
+        // console.log('Found ' + JSON.stringify(flatPlaces) + ' flat places around position (' + pos.x + ',' + pos.y + ').');
+        return flatPlaces;
+    },
 
     /** @param {Creep} creep **/
     fetchEnergy: function(creep) {
@@ -21,12 +35,12 @@ var creepCommons = {
             return;
         }
         
-        var containers = room.find(FIND_MY_STRUCTURES, {filter: {structureType: STRUCTURE_CONTAINER}});
+        var containers = room.find(FIND_STRUCTURES, {filter: {structureType: STRUCTURE_CONTAINER}});
         if (containers.length) {
             var bestContainer = null;
             var maxEnergy=0;
             containers.forEach(function(container) {
-                var energy=container.store[RESOURCE_ENERGY].getUsedCapacity();
+                var energy=container.store.getUsedCapacity(RESOURCE_ENERGY);
                 if (energy>maxEnergy) {
                     maxEnergy = energy;
                     bestContainer = container;
@@ -42,7 +56,6 @@ var creepCommons = {
 
         var sources = room.find(FIND_SOURCES);
         var hostiles = room.find(FIND_HOSTILE_CREEPS);
-        var terrain = room.getTerrain();
         var maxEnergy = 0;
         for (var i=0;i<sources.length;i++) {
             var source = sources[i];
@@ -53,15 +66,7 @@ var creepCommons = {
                 }
             });
             if (usable) {
-                var flatPlaceCount = 0;
-                for (var x = source.pos.x - 1; x <= source.pos.x + 1; x++) {
-                    for (var y = source.pos.y - 1; y <= source.pos.y + 1; y++) {
-                        if (terrain.get(x,y) != TERRAIN_MASK_WALL) {
-                            flatPlaceCount++;
-                        }
-                    }
-                }
-                // console.log('Found ' + flatPlaceCount + ' flat places around position (' + source.pos.x + ',' + source.pos.y + ').');
+                var flatPlaceCount = creepCommons.getFlatTerrain(source.pos).length;
                 if (flatPlaceCount > 1 && source.energy > maxEnergy) {
                     maxEnergy = source.energy;
                     creep.memory.sourceIndex = i + 1;

@@ -4,7 +4,7 @@ var roleUpgrader = require('role.upgrader');
 var roleBuilder = require('role.builder');
 var roleTower = require('role.tower');
 var strategySpawn = require('strategy.autospawn');
-var strategDevelop = require('strategy.development');
+var strategyDevelop = require('strategy.development');
 
 module.exports.loop = function () {
     for(var name in Memory.creeps) {
@@ -17,12 +17,14 @@ module.exports.loop = function () {
     if (strategySpawn.createMissing('harvester', 1)) {
         if (strategySpawn.createMissing('upgrader', 3)) {
             var spawn = Game.spawns['Spawn1'];
-            strategDevelop.developRoads(spawn);
+            strategyDevelop.developContainers(spawn);
+            strategyDevelop.developRoads(spawn);
             strategySpawn.createMissing('builder', 1);
-            if (strategDevelop.developRoom(2, STRUCTURE_EXTENSION, spawn.room.getPositionAt(spawn.pos.x, spawn.pos.y + 2), 5)) {
+            strategySpawn.createContainerHarvesters();
+            if (strategyDevelop.developRoom(2, STRUCTURE_EXTENSION, spawn.room.getPositionAt(spawn.pos.x, spawn.pos.y + 2), 5)) {
                 if (strategySpawn.createMissing('builder', 3)) {
                     strategySpawn.createMissing('upgrader', 5);
-                    if (strategDevelop.developRoom(3, STRUCTURE_TOWER, spawn.room.getPositionAt(spawn.pos.x, spawn.pos.y + 4), 1)) {
+                    if (strategyDevelop.developRoom(3, STRUCTURE_TOWER, spawn.room.getPositionAt(spawn.pos.x, spawn.pos.y + 4), 1)) {
                         strategySpawn.createMissing('harvester', 3);
                     }
                 }

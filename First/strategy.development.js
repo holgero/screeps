@@ -1,3 +1,5 @@
+var commons = require('creep.commons');
+
 var strategyDevelopment = {
     developRoom: function(level, type, position, count) {
         var spawn = Game.spawns['Spawn1'];
@@ -30,8 +32,21 @@ var strategyDevelopment = {
                         }
                     }
                 });
-                room.memory.roadsCreated = 1;
+                room.memory.roadsCreated = true;
             });
+        }
+    },
+    developContainers: function(spawn) {
+        var room = spawn.room;
+        if (!room.memory.containersCreated) {
+            var sources = room.find(FIND_SOURCES);
+            sources.forEach(function(source) {
+               var flatPlaces = commons.getFlatTerrain(source.pos);
+               if (flatPlaces.length == 1) {
+                   room.createConstructionSite(flatPlaces[0], STRUCTURE_CONTAINER);
+               }
+            });
+            room.memory.containersCreated = true;
         }
     }
 }
