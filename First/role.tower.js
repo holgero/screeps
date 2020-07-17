@@ -3,10 +3,14 @@ var roleTower = {
         var towers = room.find(FIND_MY_STRUCTURES, { filter: {structureType: STRUCTURE_TOWER}});
         if (towers.length) {
             towers.forEach(function(tower) {
-                var closestDamagedStructure = tower.pos.findClosestByRange(FIND_STRUCTURES, {
-                    filter: (structure) => structure.hits < structure.hitsMax && structure.structureType != STRUCTURE_WALL || structure.hits < structure.hitsMax / 30000 });
-                if(closestDamagedStructure) {
-                    tower.repair(closestDamagedStructure);
+                var maxi = [1000, 10000, 100000, 1000000, 10000000];
+                for (var i=0;i<maxi.length;i++) {
+                    var closestDamagedStructure = tower.pos.findClosestByRange(FIND_STRUCTURES, {
+                        filter: (structure) => structure.hits < structure.hitsMax && structure.hits < maxi[i] });
+                    if (closestDamagedStructure) {
+                        tower.repair(closestDamagedStructure);
+                        break;
+                    }
                 }
                 var closestHostile = tower.pos.findClosestByRange(FIND_HOSTILE_CREEPS);
                 if (closestHostile) {
