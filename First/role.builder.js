@@ -1,19 +1,21 @@
+var commons = require('creep.commons');
+
 var roleBuilder = {
 
     /** @param {Creep} creep **/
     run: function(creep) {
 
-	    if(creep.memory.building && creep.store[RESOURCE_ENERGY] == 0) {
+	    if (creep.memory.building && creep.store[RESOURCE_ENERGY] == 0) {
             creep.memory.building = false;
-            creep.memory.sourceIndex++;
+            delete creep.memory.sourceIndex;
             creep.say('🔄 harvest');
 	    }
-	    if(!creep.memory.building && creep.store.getFreeCapacity() == 0) {
+	    if (!creep.memory.building && creep.store.getFreeCapacity() == 0) {
 	        creep.memory.building = true;
 	        creep.say('🚧 build');
 	    }
 
-	    if(creep.memory.building) {
+	    if (creep.memory.building) {
 	        var targets = creep.room.find(FIND_CONSTRUCTION_SITES);
             if (targets.length) {
                 if(creep.build(targets[0]) == ERR_NOT_IN_RANGE) {
@@ -26,25 +28,9 @@ var roleBuilder = {
                     creep.moveTo(spawn, {visualizePathStyle: {stroke: '#ffffff'}});
                 }
             }
-	    }
-	    else {
-            var sources = creep.room.find(FIND_SOURCES);
-            if (!creep.memory.sourceIndex || creep.memory.sourceIndex >= sources.length) {
-                creep.memory.sourceIndex = 0;
-            }
-            var hostiles = creep.room.find(FIND_HOSTILE_CREEPS);
-            if (hostiles.length) {
-                while (sources[creep.memory.sourceIndex].pos.inRangeTo(hostiles[0], 4)) {
-                    creep.memory.sourceIndex++;
-                }
-            }
-            if (creep.memory.sourceIndex >= sources.length) {
-                creep.memory.sourceIndex = 0;
-            }
-            if(creep.harvest(sources[creep.memory.sourceIndex]) == ERR_NOT_IN_RANGE) {
-                creep.moveTo(sources[creep.memory.sourceIndex], {visualizePathStyle: {stroke: '#ffaa00'}});
-            }
-	    }
+	    } else {
+            commons.fetchEnergy(creep);
+        }
 	}
 };
 

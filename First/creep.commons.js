@@ -61,7 +61,7 @@ var creepCommons = {
                         }
                     }
                 }
-                console.log('Found ' + flatPlaceCount + ' flat places around position (' + source.pos.x + ',' + source.pos.y + ').');
+                // console.log('Found ' + flatPlaceCount + ' flat places around position (' + source.pos.x + ',' + source.pos.y + ').');
                 if (flatPlaceCount > 1 && source.energy > maxEnergy) {
                     maxEnergy = source.energy;
                     creep.memory.sourceIndex = i + 1;
