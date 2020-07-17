@@ -25,13 +25,13 @@ var creepCommons = {
         if (containers.length) {
             var bestContainer = null;
             var maxEnergy=0;
-            containers.forEach(function(container)) {
+            containers.forEach(function(container) {
                 var energy=container.store[RESOURCE_ENERGY].getUsedCapacity();
                 if (energy>maxEnergy) {
                     maxEnergy = energy;
                     bestContainer = container;
                 }
-            }
+            });
             if (bestContainer) {
                 if (creep.withdraw(bestContainer, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
                     creep.moveTo(bestContainer, {visualizePathStyle: {stroke: '#ffaa00'}});
@@ -42,6 +42,7 @@ var creepCommons = {
 
         var sources = room.find(FIND_SOURCES);
         var hostiles = room.find(FIND_HOSTILE_CREEPS);
+        var terrain = room.getTerrain();
         var maxEnergy = 0;
         for (var i=0;i<sources.length;i++) {
             var source = sources[i];
@@ -52,7 +53,16 @@ var creepCommons = {
                 }
             });
             if (usable) {
-                if (source.energy > maxEnergy) {
+                var flatPlaceCount = 0;
+                for (var x = source.pos.x - 1; x <= source.pos.x + 1; x++) {
+                    for (var y = source.pos.y - 1; y <= source.pos.y + 1; y++) {
+                        if (terrain.get(x,y) != TERRAIN_MASK_WALL) {
+                            flatPlaceCount++;
+                        }
+                    }
+                }
+                console.log('Found ' + flatPlaceCount + ' flat places around position (' + source.pos.x + ',' + source.pos.y + ').');
+                if (flatPlaceCount > 1 && source.energy > maxEnergy) {
                     maxEnergy = source.energy;
                     creep.memory.sourceIndex = i + 1;
                 }
