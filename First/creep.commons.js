@@ -38,7 +38,7 @@ var creepCommons = {
         var containers = room.find(FIND_STRUCTURES, {filter: {structureType: STRUCTURE_CONTAINER}});
         if (containers.length) {
             var bestContainer = null;
-            var maxEnergy=0;
+            var maxEnergy=creep.store.getCapacity(RESOURCE_ENERGY)/2;
             containers.forEach(function(container) {
                 var energy=container.store.getUsedCapacity(RESOURCE_ENERGY);
                 if (energy>maxEnergy) {
