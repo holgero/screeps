@@ -18,10 +18,10 @@ module.exports.loop = function () {
             var spawn = Game.spawns['Spawn1'];
             strategDevelop.developRoads(spawn);
             strategySpawn.createMissing('builder', 1);
-            if (strategDevelop.developRoom(2, STRUCTURE_EXTENSION, spawn.room.getPositionAt(spawn.pos.x, spawn.pos.y + 5), 5)) {
+            if (strategDevelop.developRoom(2, STRUCTURE_EXTENSION, spawn.room.getPositionAt(spawn.pos.x, spawn.pos.y + 2), 5)) {
                 if (strategySpawn.createMissing('builder', 3)) {
                     strategySpawn.createMissing('upgrader', 5);
-                    if (strategDevelop.developRoom(3, STRUCTURE_TOWER, spawn.room.getPositionAt(spawn.pos.x, spawn.pos.y + 10), 1)) {
+                    if (strategDevelop.developRoom(3, STRUCTURE_TOWER, spawn.room.getPositionAt(spawn.pos.x, spawn.pos.y + 4), 1)) {
                         strategySpawn.createMissing('harvester', 3);
                     }
                 }
