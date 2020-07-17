@@ -40,7 +40,9 @@ var strategySpawn = {
                     console.log('Spawning new ' + role + ': ' + newName);
                     spawn.spawnCreep(body, newName, {memory: {role: role}});
                 } else {
-                    console.log('Cant spawn a new creep with body ' + body + ': ' + err);
+                    if (err != ERR_NOT_ENOUGH_ENERGY) {
+                        console.log('Cant spawn a new creep with body ' + body + ': ' + err);
+                    }
                 }
                 return 0;
             }
