@@ -40,12 +40,14 @@ var strategyDevelopment = {
         var room = spawn.room;
         if (!room.memory.containersCreated) {
             var sources = room.find(FIND_SOURCES);
-            sources.forEach(function(source) {
-               var flatPlaces = commons.getFlatTerrain(source.pos);
-               if (flatPlaces.length == 1) {
-                   room.createConstructionSite(flatPlaces[0], STRUCTURE_CONTAINER);
-               }
-            });
+            for (var i=0;i<9;i++) {
+                sources.forEach(function(source) {
+                   var flatPlaces = commons.getFlatTerrain(source.pos);
+                   if (flatPlaces.length == i) {
+                       room.createConstructionSite(flatPlaces[0], STRUCTURE_CONTAINER);
+                   }
+                });
+            }
             room.memory.containersCreated = true;
         }
     }
