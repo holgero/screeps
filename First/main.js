@@ -18,7 +18,7 @@ module.exports.loop = function () {
         if (strategySpawn.createMissing('upgrader', 3)) {
             var spawn = Game.spawns['Spawn1'];
             strategyDevelop.developContainers(spawn);
-            strategyDevelop.developRoads(spawn);
+            strategyDevelop.developSwampRoads(spawn);
             strategySpawn.createMissing('builder', 1);
             strategySpawn.createContainerHarvesters();
             if (strategyDevelop.developRoom(2, STRUCTURE_EXTENSION, spawn.room.getPositionAt(spawn.pos.x, spawn.pos.y + 2), 5)) {
