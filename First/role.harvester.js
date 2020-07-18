@@ -4,7 +4,8 @@ var roleHarvester = {
 
     /** @param {Creep} creep **/
     run: function(creep) {
-        
+        commons.releaseEnergySources(creep);
+
 	    if (creep.memory.feeding && creep.store[RESOURCE_ENERGY] == 0) {
             creep.memory.feeding = false;
             creep.say('🔄 harvest');

@@ -14,6 +14,13 @@ var creepCommons = {
         return flatPlaces;
     },
 
+    releaseEnergySources: function(creep) {
+        if (creep.store.getFreeCapacity(RESOURCE_ENERGY)==0) {
+            delete creep.memory.sourceId;
+            delete creep.memory.containerId;
+        }
+    },
+
     /** @param {Creep} creep **/
     fetchEnergy: function(creep) {
         var room = creep.room;
@@ -25,8 +32,6 @@ var creepCommons = {
             } else {
                 if (creep.harvest(source) == ERR_NOT_IN_RANGE) {
                     creep.moveTo(source, {visualizePathStyle: {stroke: '#ffaa00'}});
-                } else if (creep.store.getFreeCapacity(RESOURCE_ENERGY)==0) {
-                    delete creep.memory.sourceId;
                 }
                 return;
             }
@@ -38,12 +43,8 @@ var creepCommons = {
             if (container == null) {
                 delete creep.memory.containerId;
             } else {
-                // console.log("Try withdraw from " + JSON.stringify(container));
                 if (creep.withdraw(container, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
-                    // console.log("Will move to container");
                     creep.moveTo(container, {visualizePathStyle: {stroke: '#ffaa00'}});
-                } else {
-                    delete creep.memory.containerId;
                 }
                 return;
             }
