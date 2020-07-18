@@ -8,7 +8,7 @@ var roleSpawn = {
         nearbyCreeps.forEach(function(nearCreep) {
             var creep = nearCreep.creep;
             // console.log('Inspect creep ' + JSON.stringify(creep));
-            if (creep.my && creep.ticksToLive < 500) {
+            if (creep.my && creep.ticksToLive < 1000) {
                 var err = spawn.renewCreep(creep);
                 console.log('Renew creep: ' + err);
             }
