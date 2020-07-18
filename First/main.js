@@ -25,7 +25,9 @@ module.exports.loop = function () {
                 if (strategySpawn.createMissing('builder', 3)) {
                     strategySpawn.createMissing('upgrader', 5);
                     if (strategyDevelop.developRoom(3, STRUCTURE_TOWER, spawn.room.getPositionAt(spawn.pos.x, spawn.pos.y + 4), 1)) {
-                        strategySpawn.createMissing('harvester', 3);
+                        if (strategySpawn.createMissing('harvester', 3)) {
+                            strategyDevelop.developRoom(3, STRUCTURE_EXTENSION, spawn.room.getPositionAt(spawn.pos.x-2, spawn.pos.y + 6), 10);
+                        }
                     }
                 }
             }
