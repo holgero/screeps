@@ -1,4 +1,12 @@
 var roleHarvester2 = {
+    info: {
+        roleName: 'harvester2',
+        minimalBody: [WORK, WORK, MOVE],
+        increaseCarry: false,
+        increaseMove: true,
+        increaseWork: true,
+    },
+
     /** @param {Creep} creep **/
     run: function(creep) {
         // console.log('run');
@@ -32,7 +40,7 @@ var roleHarvester2 = {
                 return;
             }
         }
-        console.log('find a place');
+        // console.log('find a place');
         // find a suitable source with a container that is not currently harvested
         var sources = room.find(FIND_SOURCES);
         sources.forEach(function (source) {

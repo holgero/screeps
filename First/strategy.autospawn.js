@@ -1,79 +1,56 @@
 var strategySpawn = {
-    createMissing: function(role, desiredCreeps) {
+    createMissing: function(info, desiredCreeps) {
         var spawn = Game.spawns['Spawn1'];
-        var creeps = _.filter(Game.creeps, (creep) => creep.memory.role == role);
         if (spawn.spawning) {
-            var spawningCreep = Game.creeps[spawn.spawning.name];
-            spawn.room.visual.text(
-                '🛠️' + spawningCreep.memory.role,
-                spawn.pos.x + 1,
-                spawn.pos.y,
-                {align: 'left', opacity: 0.8});
             return 0;
-        } else {
-            if (creeps.length < desiredCreeps) {
-                var body;
-                if (spawn.room.controller.level < 2) {
-                    body = [WORK, CARRY, MOVE];
-                } else {
-                    body = [WORK, CARRY, CARRY, MOVE, MOVE];
-                }
-                switch (spawn.room.find(FIND_MY_STRUCTURES, {filter: { structureType: STRUCTURE_EXTENSION }}).length) {
-                    case 0:
-                        break;
-                    case 1:
-                        body.push(MOVE);
-                        break;
-                    case 2:
-                        body.push(MOVE, CARRY);
-                        break;
-                    case 3:
-                    case 4:
-                    case 5:
-                    default:
-                        body.push(MOVE, CARRY, MOVE);
-                        break;
-                }
-                var err = spawn.spawnCreep(body, 'whatever', {memory: {role: role}, dryRun: true});
-                if (!err) {
-                    var newName = _.capitalize(role) + Game.time;
-                    console.log('Spawning new ' + role + ': ' + newName);
-                    spawn.spawnCreep(body, newName, {memory: {role: role}});
-                } else {
-                    if (err != ERR_NOT_ENOUGH_ENERGY) {
-                        console.log('Cant spawn a new creep with body ' + body + ': ' + err);
-                    }
-                }
-                return 0;
-            }
+        }
+        var creeps = _.filter(Game.creeps, (creep) => creep.memory.role == info.roleName);
+        if (creeps.length >= desiredCreeps) {
             return 1;
         }
-    },
-    createContainerHarvesters: function() {
-        var spawn = Game.spawns['Spawn1'];
-        if (!spawn.spawning) {
-            var role = 'harvester2';
-            var creeps = _.filter(Game.creeps, (creep) => creep.memory.role == role);
-            var containers = spawn.room.find(FIND_STRUCTURES, { filter: {structureType: STRUCTURE_CONTAINER}});
-            if (creeps.length < containers.length) {
-                var body;
-                if (spawn.room.controller.level < 2) {
-                    body = [WORK, MOVE];
-                } else {
-                    body = [WORK, WORK, MOVE];
-                }
-                var err = spawn.spawnCreep(body, 'whatever', {memory: {role: role}, dryRun: true});
-                if (!err) {
-                    var newName = _.capitalize(role) + Game.time;
-                    console.log('Spawning new ' + role + ': ' + newName);
-                    spawn.spawnCreep(body, newName, {memory: {role: role}});
-                } else {
-                    if (err != ERR_NOT_ENOUGH_ENERGY) {
-                        console.log('Cant spawn a new creep with body ' + body + ': ' + err);
-                    }
-                }
+        var creepAdditions = 0;
+        if (spawn.room.controller.level >= 2) {
+            creepAdditions++;
+        }
+        creepAdditions += Math.ceil(spawn.room.find(FIND_MY_STRUCTURES, {filter: { structureType: STRUCTURE_EXTENSION }}).length/1.5);
+        var body = info.minimalBody.slice();
+        while (creepAdditions > 0) {
+            if (creepAdditions > 0 && info.increaseMove) {
+                body.push(MOVE);
+                creepAdditions--;
+            }
+            if (creepAdditions > 0 && info.increaseCarry) {
+                body.push(CARRY);
+                creepAdditions--;
+            }
+            if (creepAdditions > 0 && info.increaseMove) {
+                body.push(MOVE);
+                creepAdditions--;
+            }
+            if (creepAdditions > 0 && info.increaseWork) {
+                body.push(WORK);
+                creepAdditions-=2;
             }
         }
+        var newName = _.capitalize(info.roleName) + '-' + Game.time;
+        while (body.length > info.minimalBody.length && spawn.spawnCreep(body, newName, {memory: {role: info.roleName}, dryRun: true}) == ERR_NOT_ENOUGH_ENERGY) {
+            body.pop();
+        }
+        var err = spawn.spawnCreep(body, newName, {memory: {role: info.roleName}, dryRun: true});
+        if (!err) {
+            console.log('Spawning new ' + info.roleName + ': ' + newName);
+            spawn.spawnCreep(body, newName, {memory: {role: info.roleName}});
+        } else {
+            if (err != ERR_NOT_ENOUGH_ENERGY) {
+                console.log('Cant spawn a new "' + info.roleName + '" creep with body ' + body + ': ' + err);
+            }
+        }
+        return 0;
+    },
+    createContainerHarvesters: function(info) {
+        var spawn = Game.spawns['Spawn1'];
+        var containers = spawn.room.find(FIND_STRUCTURES, { filter: {structureType: STRUCTURE_CONTAINER}});
+        return strategySpawn.createMissing(info, containers.length);
     }
 }
 

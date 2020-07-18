@@ -1,6 +1,13 @@
 var commons = require('creep.commons');
 
 var roleUpgrader = {
+    info: {
+        roleName: 'upgrader',
+        minimalBody: [WORK, CARRY, MOVE],
+        increaseCarry: true,
+        increaseMove: true,
+        increaseWork: true,
+    },
 
     /** @param {Creep} creep **/
     run: function(creep) {

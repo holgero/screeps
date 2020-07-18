@@ -1,6 +1,13 @@
 var commons = require('creep.commons');
 
 var roleHarvester = {
+    info: {
+        roleName: 'harvester',
+        minimalBody: [WORK, CARRY, MOVE],
+        increaseCarry: true,
+        increaseMove: true,
+        increaseWork: false,
+    },
 
     /** @param {Creep} creep **/
     run: function(creep) {
