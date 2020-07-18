@@ -3,6 +3,7 @@ var roleHarvester2 = require('role.harvester2');
 var roleUpgrader = require('role.upgrader');
 var roleBuilder = require('role.builder');
 var roleTower = require('role.tower');
+var roleSpawn = require('role.spawn');
 var strategySpawn = require('strategy.autospawn');
 var strategyDevelop = require('strategy.development');
 
@@ -14,11 +15,11 @@ module.exports.loop = function () {
         }
     }
 
+    var spawn = Game.spawns['Spawn1'];
     if (strategySpawn.createMissing('harvester', 1)) {
         if (strategySpawn.createMissing('upgrader', 3)) {
-            var spawn = Game.spawns['Spawn1'];
-            strategyDevelop.developContainers(spawn);
             strategyDevelop.developSwampRoads(spawn);
+            strategyDevelop.developContainers(spawn);
             strategySpawn.createMissing('builder', 1);
             strategySpawn.createContainerHarvesters();
             if (strategyDevelop.developRoom(2, STRUCTURE_EXTENSION, spawn.room.getPositionAt(spawn.pos.x, spawn.pos.y + 2), 5)) {
@@ -34,7 +35,8 @@ module.exports.loop = function () {
         }
     }
 
-    roleTower.run(Game.spawns['Spawn1'].room);
+    roleSpawn.run(spawn);
+    roleTower.run(spawn.room);
 
     for(var name in Game.creeps) {
         var creep = Game.creeps[name];
