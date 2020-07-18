@@ -42,7 +42,7 @@ var creepCommons = {
                 if (creep.withdraw(container, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
                     // console.log("Will move to container");
                     creep.moveTo(container, {visualizePathStyle: {stroke: '#ffaa00'}});
-                } else if (creep.store.getFreeCapacity(RESOURCE_ENERGY)==0) {
+                } else {
                     delete creep.memory.containerId;
                 }
                 return;
