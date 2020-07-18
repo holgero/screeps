@@ -9,9 +9,8 @@ var roleHarvester = {
             creep.memory.feeding = false;
             creep.say('🔄 harvest');
 	    }
-	    if (!creep.memory.feeding && creep.store.getFreeCapacity() == 0) {
+	    if (!creep.memory.feeding && creep.store.getFreeCapacity(RESOURCE_ENERGY) == 0) {
 	        creep.memory.feeding = true;
-            delete creep.memory.sourceId;
 	        creep.say('🚧 feed');
 	    }
 

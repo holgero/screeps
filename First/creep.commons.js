@@ -22,12 +22,31 @@ var creepCommons = {
             var source = Game.getObjectById(creep.memory.sourceId);
             if (!source) {
                 delete creep.memory.sourceId;
+            } else {
+                if (creep.harvest(source) == ERR_NOT_IN_RANGE) {
+                    creep.moveTo(source, {visualizePathStyle: {stroke: '#ffaa00'}});
+                } else if (creep.store.getFreeCapacity(RESOURCE_ENERGY)==0) {
+                    delete creep.memory.sourceId;
+                }
                 return;
             }
-            if (creep.harvest(source) == ERR_NOT_IN_RANGE) {
-                creep.moveTo(source, {visualizePathStyle: {stroke: '#ffaa00'}});
+        }
+
+        if (creep.memory.containerId) {
+            // console.log('Take from container ' + creep.memory.containerId);
+            var container = Game.getObjectById(creep.memory.containerId);
+            if (container == null) {
+                delete creep.memory.containerId;
+            } else {
+                // console.log("Try withdraw from " + JSON.stringify(container));
+                if (creep.withdraw(container, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
+                    // console.log("Will move to container");
+                    creep.moveTo(container, {visualizePathStyle: {stroke: '#ffaa00'}});
+                } else if (creep.store.getFreeCapacity(RESOURCE_ENERGY)==0) {
+                    delete creep.memory.containerId;
+                }
+                return;
             }
-            return;
         }
 
         var droppedEnergy = room.find(FIND_DROPPED_RESOURCES, { filter: {resourceType: RESOURCE_ENERGY}});
@@ -39,27 +58,30 @@ var creepCommons = {
         }
         
         var containers = room.find(FIND_STRUCTURES, {filter: {structureType: STRUCTURE_CONTAINER}});
+        var creeps = room.find(FIND_MY_CREEPS);
         if (containers.length) {
             var bestContainer = null;
             var maxEnergy=creep.store.getCapacity(RESOURCE_ENERGY);
             containers.forEach(function(container) {
                 var energy=container.store.getUsedCapacity(RESOURCE_ENERGY);
-                if (energy>maxEnergy) {
+                creeps.forEach(function(creep) {
+                    if (creep.memory.containerId == container.id) {
+                        energy-=creep.store.getCapacity(RESOURCE_ENERGY);
+                    }
+                });
+                if (energy >= maxEnergy) {
                     maxEnergy = energy;
                     bestContainer = container;
                 }
             });
             if (bestContainer) {
-                if (creep.withdraw(bestContainer, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
-                    creep.moveTo(bestContainer, {visualizePathStyle: {stroke: '#ffaa00'}});
-                }
+                creep.memory.containerId = bestContainer.id;
                 return;
             }
         }
 
         var sources = room.find(FIND_SOURCES);
         var hostiles = room.find(FIND_HOSTILE_CREEPS);
-        var creeps = room.find(FIND_MY_CREEPS);
         var usableSources = [];
         for (var i=0;i<sources.length;i++) {
             var source = sources[i];

@@ -9,9 +9,8 @@ var roleBuilder = {
             creep.memory.building = false;
             creep.say('🔄 harvest');
 	    }
-	    if (!creep.memory.building && creep.store.getFreeCapacity() == 0) {
+	    if (!creep.memory.building && creep.store.getFreeCapacity(RESOURCE_ENERGY) == 0) {
 	        creep.memory.building = true;
-            delete creep.memory.sourceId;
 	        creep.say('🚧 build');
 	    }
 
