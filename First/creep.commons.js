@@ -61,7 +61,7 @@ var creepCommons = {
         var creeps = room.find(FIND_MY_CREEPS);
         if (containers.length) {
             var bestContainer = null;
-            var maxEnergy=creep.store.getCapacity(RESOURCE_ENERGY);
+            var maxEnergy=creep.store.getFreeCapacity(RESOURCE_ENERGY);
             containers.forEach(function(container) {
                 var energy=container.store.getUsedCapacity(RESOURCE_ENERGY);
                 creeps.forEach(function(creep) {
