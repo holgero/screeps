@@ -13,8 +13,9 @@ var strategyDevelopment = {
                     while (_.filter(room.lookAt(x, position.y), function(s) {return s.type == 'constructionSite'}).length) {
                         x++;
                     }
-                    var err = room.createConstructionSite(x, position.y, type);
-                    console.log('createConstructionSite for ' + type + ': ' + err);
+                    while (room.createConstructionSite(x, position.y, type) == ERR_INVALID_TARGET) {
+                        x++;
+                    }
                 }
             }
             return 1;
