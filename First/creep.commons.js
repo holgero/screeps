@@ -86,7 +86,11 @@ var creepCommons = {
         } else if (usableSources.length > 1) {
             // console.log('Found sources: ' + JSON.stringify(usableSources));
             var source = creep.pos.findClosestByPath(usableSources);
-            creep.memory.sourceId = source.id;
+            if (source != null) {
+                creep.memory.sourceId = source.id;
+            } else {
+                creep.memory.sourceId = usableSources[0].id;
+            }
         }
     }
 };
