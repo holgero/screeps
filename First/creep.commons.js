@@ -18,11 +18,14 @@ var creepCommons = {
     fetchEnergy: function(creep) {
         var room = creep.room;
 
-        if (creep.memory.sourceIndex) {
-            var sources = room.find(FIND_SOURCES);
-            var idx = creep.memory.sourceIndex - 1;
-            if (creep.harvest(sources[idx]) == ERR_NOT_IN_RANGE) {
-                creep.moveTo(sources[idx], {visualizePathStyle: {stroke: '#ffaa00'}});
+        if (creep.memory.sourceId) {
+            var source = Game.getObjectById(creep.memory.sourceId);
+            if (!source) {
+                delete creep.memory.sourceId;
+                return;
+            }
+            if (creep.harvest(source) == ERR_NOT_IN_RANGE) {
+                creep.moveTo(source, {visualizePathStyle: {stroke: '#ffaa00'}});
             }
             return;
         }
@@ -38,7 +41,7 @@ var creepCommons = {
         var containers = room.find(FIND_STRUCTURES, {filter: {structureType: STRUCTURE_CONTAINER}});
         if (containers.length) {
             var bestContainer = null;
-            var maxEnergy=creep.store.getCapacity(RESOURCE_ENERGY)/2;
+            var maxEnergy=creep.store.getCapacity(RESOURCE_ENERGY);
             containers.forEach(function(container) {
                 var energy=container.store.getUsedCapacity(RESOURCE_ENERGY);
                 if (energy>maxEnergy) {
@@ -56,7 +59,8 @@ var creepCommons = {
 
         var sources = room.find(FIND_SOURCES);
         var hostiles = room.find(FIND_HOSTILE_CREEPS);
-        var maxEnergy = 0;
+        var creeps = room.find(FIND_MY_CREEPS);
+        var usableSources = [];
         for (var i=0;i<sources.length;i++) {
             var source = sources[i];
             var usable = true;
@@ -67,18 +71,22 @@ var creepCommons = {
             });
             if (usable) {
                 var flatPlaceCount = creepCommons.getFlatTerrain(source.pos).length;
-                if (flatPlaceCount > 1 && source.energy > maxEnergy) {
-                    maxEnergy = source.energy;
-                    creep.memory.sourceIndex = i + 1;
+                creeps.forEach(function(creep) {
+                    if (creep.memory.sourceId == source.id) {
+                        flatPlaceCount--;
+                    }
+                });
+                if (flatPlaceCount > 0 && source.energy > 0) {
+                    usableSources.push(source);
                 }
             }
         }
-        if (creep.memory.sourceIndex) {
-            var idx = creep.memory.sourceIndex - 1;
-            if (creep.harvest(sources[idx]) == ERR_NOT_IN_RANGE) {
-                creep.moveTo(sources[idx], {visualizePathStyle: {stroke: '#ffaa00'}});
-            }
-            return;
+        if (usableSources.length == 1) {
+            creep.memory.sourceId =  usableSources[0].id;
+        } else if (usableSources.length > 1) {
+            // console.log('Found sources: ' + JSON.stringify(usableSources));
+            var source = creep.pos.findClosestByPath(usableSources);
+            creep.memory.sourceId = source.id;
         }
     }
 };

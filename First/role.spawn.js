@@ -10,7 +10,7 @@ var roleSpawn = {
             // console.log('Inspect creep ' + JSON.stringify(creep));
             if (creep.my && creep.ticksToLive < 1000) {
                 var err = spawn.renewCreep(creep);
-                console.log('Renew creep: ' + err);
+                // console.log('Renew creep: ' + err);
             }
         });
     }

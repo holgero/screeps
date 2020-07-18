@@ -8,31 +8,29 @@ var roleHarvester2 = {
             var pos = creep.memory.placeToBe;
             if (creep.pos.x == pos.x && creep.pos.y == pos.y) {
                 creep.say('arrived');
-                creep.memory.atSource = true;
                 delete creep.memory.placeToBe;
             } else if (room.lookForAt(LOOK_CREEPS, pos.x, pos.y).length) {
                 // console.log('occupied storage');
                 // occupied by someone else
                 delete creep.memory.placeToBe;
+                delete creep.memory.sourceId;
             } else {
                 // console.log('continue going');
-                creep.say('goto container');
                 creep.moveTo(creep.memory.placeToBe.x, creep.memory.placeToBe.y, {visualizePathStyle: {stroke: '#ffaa00'}});
                 return;
             }
         }
-        if (creep.memory.atSource) {
-            // all is well, continue harvesting
-            // console.log('continue harvesting');
-            var sources = room.lookForAtArea(LOOK_SOURCES, creep.pos.y-1, creep.pos.x-1, creep.pos.y+1, creep.pos.x+1, true);
-            if (sources.length != 1) {
-                console.log('Not one single sources in range: ' + JSON.stringify(sources));
+        if (creep.memory.sourceId) {
+            var source = Game.getObjectById(creep.memory.sourceId);
+            if (source == null) {
+                delete creep.memory.sourceId;
+            } else {
+                var err = creep.harvest(source);
+                if (err != OK) {
+                    console.log('Harvesting ' + JSON.stringify(source) + ' failed: ' + err);
+                }
+                return;
             }
-            var err = creep.harvest(sources[0].source);
-            if (err != OK) {
-                console.log('Harvesting ' + JSON.stringify(sources[0].source) + ' failed: ' + err);
-            }
-            return;
         }
         console.log('find a place');
         // find a suitable source with a container that is not currently harvested
@@ -43,8 +41,11 @@ var roleHarvester2 = {
                 if (structure.structure.structureType == STRUCTURE_CONTAINER) {
                     if (room.lookForAt(LOOK_CREEPS, structure.x, structure.y).length == 0) {
                         creep.memory.placeToBe = structure.structure.pos;
+                        creep.memory.sourceId = source.id;
                         creep.moveTo(creep.memory.placeToBe, {visualizePathStyle: {stroke: '#ffaa00'}});
                         return;
+                    } else if (creep.pos.isEqualTo(structure.structure.pos)) {
+                        creep.memory.sourceId = source.id;
                     }
                 }
             });
