@@ -16,6 +16,26 @@ var strategyDevelopment = {
         }
         return 0;
     },
+    developRoads: function(spawn) {
+        var room = spawn.room;
+        if (!room.memory.roadsCreated) {
+            var from = spawn.pos;
+            var targets = room.find(FIND_SOURCES);
+            targets.push(room.controller);
+            targets.forEach(function(source) {
+                var path = room.findPath(from, source.pos, { ignoreCreeps: true, ignoreRoads: true, swampCost: 1});
+                path.forEach(function(pos) {
+                    if (pos.x != source.pos.x || pos.y != source.pos.y) {
+                        var err = room.createConstructionSite(pos.x, pos.y, STRUCTURE_ROAD);
+                        if (err) {
+                            console.log('Failed to place road at (' + pos.x + ',' + pos.y + '): ' + err);
+                        }
+                    }
+                });
+                room.memory.roadsCreated = true;
+            });
+        }
+    },
     developSwampRoads: function(spawn) {
         var room = spawn.room;
         if (!room.memory.swampRoadsCreated) {

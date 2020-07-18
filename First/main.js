@@ -24,6 +24,7 @@ module.exports.loop = function () {
             strategySpawn.createContainerHarvesters();
             if (strategyDevelop.developRoom(2, STRUCTURE_EXTENSION, spawn.room.getPositionAt(spawn.pos.x, spawn.pos.y + 2), 5)) {
                 if (strategySpawn.createMissing('builder', 3)) {
+                    strategyDevelop.developRoads(spawn);
                     strategySpawn.createMissing('upgrader', 5);
                     if (strategyDevelop.developRoom(3, STRUCTURE_TOWER, spawn.room.getPositionAt(spawn.pos.x, spawn.pos.y + 4), 1)) {
                         if (strategySpawn.createMissing('harvester', 3)) {
