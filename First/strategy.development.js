@@ -4,23 +4,23 @@ var strategyDevelopment = {
     developRoom: function(level, type, position, count) {
         var spawn = Game.spawns['Spawn1'];
         var room = spawn.room;
-        if (room.controller.level >= level) {
-            var existing = room.find(FIND_MY_STRUCTURES, { filter: {structureType: type}});
-            if (existing.length < count) {
-                if (room.find(FIND_MY_CONSTRUCTION_SITES, { filter: {structureType: type}}).length < 1) {
-                    var x = position.x+existing.length-Math.ceil(count/2);
-                    console.log(LOOK_CONSTRUCTION_SITES, x, position.y);
-                    while (_.filter(room.lookAt(x, position.y), function(s) {return s.type == 'constructionSite'}).length) {
-                        x++;
-                    }
-                    while (room.createConstructionSite(x, position.y, type) == ERR_INVALID_TARGET) {
-                        x++;
-                    }
+        if (room.controller.level < level) {
+            return 0;
+        }
+        var existing = room.find(FIND_MY_STRUCTURES, { filter: {structureType: type}});
+        if (existing.length < count) {
+            if (room.find(FIND_MY_CONSTRUCTION_SITES, { filter: {structureType: type}}).length < 1) {
+                var x = position.x+existing.length-Math.ceil(count/2);
+                console.log(LOOK_CONSTRUCTION_SITES, x, position.y);
+                while (_.filter(room.lookAt(x, position.y), function(s) {return s.type == 'constructionSite'}).length) {
+                    x++;
+                }
+                while (room.createConstructionSite(x, position.y, type) == ERR_INVALID_TARGET) {
+                    x++;
                 }
             }
-            return 1;
         }
-        return 0;
+        return 1;
     },
     developRoads: function(spawn) {
         var room = spawn.room;

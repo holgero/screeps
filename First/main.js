@@ -22,19 +22,22 @@ module.exports.loop = function () {
             strategyDevelop.developContainers(spawn);
             strategySpawn.createMissing(roleBuilder.info, 1);
             strategySpawn.createContainerHarvesters(roleHarvester2.info);
-            if (strategyDevelop.developRoom(2, STRUCTURE_EXTENSION, spawn.room.getPositionAt(spawn.pos.x, spawn.pos.y + 2), 5)) {
-                if (strategySpawn.createMissing(roleBuilder.info, 3)) {
-                    strategySpawn.createMissing(roleHarvester.info, 2);
-                    strategyDevelop.developRoads(spawn);
-                    strategySpawn.createMissing(roleUpgrader.info, 5);
-                    if (strategyDevelop.developRoom(3, STRUCTURE_TOWER, spawn.room.getPositionAt(spawn.pos.x, spawn.pos.y + 4), 1)) {
-                        if (strategySpawn.createMissing(roleHarvester.info, 3)) {
-                            strategyDevelop.developRoom(3, STRUCTURE_EXTENSION, spawn.room.getPositionAt(spawn.pos.x-2, spawn.pos.y + 6), 10);
-                        }
-                    }
-                }
-            }
         }
+    }
+    if (strategyDevelop.developRoom(2, STRUCTURE_EXTENSION, spawn.room.getPositionAt(spawn.pos.x, spawn.pos.y + 2), 5)) {
+        if (strategySpawn.createMissing(roleBuilder.info, 3)) {
+            strategySpawn.createMissing(roleHarvester.info, 2);
+            strategyDevelop.developRoads(spawn);
+            strategySpawn.createMissing(roleUpgrader.info, 5);
+        }
+    }
+    if (strategyDevelop.developRoom(3, STRUCTURE_TOWER, spawn.room.getPositionAt(spawn.pos.x, spawn.pos.y + 4), 1)) {
+        if (strategySpawn.createMissing(roleHarvester.info, 3)) {
+            strategyDevelop.developRoom(3, STRUCTURE_EXTENSION, spawn.room.getPositionAt(spawn.pos.x-2, spawn.pos.y + 6), 10);
+        }
+    }
+    if (strategyDevelop.developRoom(4, STRUCTURE_STORAGE, spawn.room.getPositionAt(spawn.pos.x, spawn.pos.y + 6), 1)) {
+        // more on level 4?
     }
 
     roleSpawn.run(spawn);
