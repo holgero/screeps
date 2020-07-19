@@ -34,7 +34,9 @@ var roleHarvester2 = {
                 delete creep.memory.sourceId;
             } else {
                 var err = creep.harvest(source);
-                if (err != OK) {
+                if (err == ERR_NOT_ENOUGH_RESOURCES && creep.ticksToLive < 100) {
+                    // console.log('Source exhausted');
+                } else if (err != OK) {
                     console.log('Harvesting ' + JSON.stringify(source) + ' failed: ' + err);
                 }
                 return;
