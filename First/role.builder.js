@@ -23,11 +23,23 @@ var roleBuilder = {
 	    }
 
 	    if (creep.memory.building) {
-	        var targets = creep.room.find(FIND_CONSTRUCTION_SITES);
+	        var room = creep.room;
+	        var targets = room.find(FIND_CONSTRUCTION_SITES);
             if (targets.length) {
-                if(creep.build(targets[0]) == ERR_NOT_IN_RANGE) {
-                    creep.moveTo(targets[0], {visualizePathStyle: {stroke: '#ffffff'}});
+                var target = targets[0];
+                if (creep.pos.inRangeTo(target.pos, 3)) {
+                    var flags = _.filter(room.lookForAt(LOOK_FLAGS, creep.pos), function(flag) { return flag.name.startsWith('no parking'); });
+                    if (flags.length > 0) {
+                        // console.log(JSON.stringify(flags));
+                    } else {
+                        var err = creep.build(target);
+                        if (err != OK) {
+                           console.log('Build failed: ' + err);
+                        }
+                        return;
+                    }
                 }
+                creep.moveTo(target, {visualizePathStyle: {stroke: '#ffffff'}});
             } else {
                 var spawn = Game.spawns['Spawn1'];
                 if (creep.transfer(spawn, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
