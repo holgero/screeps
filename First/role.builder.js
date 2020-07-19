@@ -36,6 +36,8 @@ var roleBuilder = {
         var right = Math.min(target.pos.x+3);
         var areaStuff = room.lookAtArea(top, left, bottom, right);
         // console.log('All around target: ' + JSON.stringify(areaStuff));
+        var bestDistance = 99;
+        var place = null;
         for (var y=top; y<=bottom; y++) {
             for (var x=left; x<=right; x++) {
                 if (target.pos.isEqualTo(x, y)) {
@@ -57,10 +59,14 @@ var roleBuilder = {
                         continue;
                     }
                 }
-                return creep.room.getPositionAt(x,y);
+                var distance = creep.pos.getRangeTo(x, y);
+                if (distance < bestDistance) {
+                    bestDistance = distance;
+                    place = creep.room.getPositionAt(x,y);
+                }
             }
         }
-        return null;
+        return place;
     },
     /** @param {Creep} creep **/
     run: function(creep) {
