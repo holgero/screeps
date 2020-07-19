@@ -49,6 +49,9 @@ var roleBuilder = {
                 if (_.filter(currentRow, roleBuilder.cannotParkOn).length > 0) {
                     continue;
                 }
+                if (_.filter(currentRow, function(o) { return o.type == FIND_CREEPS; }).length > 0) {
+                    continue;
+                }
                 for (var source of sources) {
                     if (source.pos.isNearTo(x,y)) {
                         continue;
