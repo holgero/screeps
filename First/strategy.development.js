@@ -71,7 +71,7 @@ var strategyDevelopment = {
             var sources = room.find(FIND_SOURCES);
             for (var i=0;i<9;i++) {
                 sources.forEach(function(source) {
-                   var flatPlaces = commons.getFlatTerrain(source.pos);
+                   var flatPlaces = commons.getWalkableTerrain(source.pos);
                    if (flatPlaces.length == i) {
                        room.createConstructionSite(flatPlaces[0], STRUCTURE_CONTAINER);
                    }

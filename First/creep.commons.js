@@ -1,17 +1,19 @@
 var creepCommons = {
-    getFlatTerrain: function(pos) {
+    getWalkableTerrain: function(pos) {
         var room = Game.rooms[pos.roomName];
         var terrain = room.getTerrain();
-        var flatPlaces = [];
+        var walkable = [];
         for (var x = pos.x - 1; x <= pos.x + 1; x++) {
             for (var y = pos.y - 1; y <= pos.y + 1; y++) {
-                if (terrain.get(x,y) != TERRAIN_MASK_WALL) {
-                    flatPlaces.push(room.getPositionAt(x,y));
+                if (terrain.get(x,y) != TERRAIN_MASK_WALL ||
+                    _.filter(room.lookForAt(LOOK_STRUCTURES,x,y), function(structure) {
+                        return structure.structureType == STRUCTURE_ROAD; }).length == 1) {
+                    walkable.push(room.getPositionAt(x,y));
                 }
             }
         }
-        // console.log('Found ' + JSON.stringify(flatPlaces) + ' flat places around position (' + pos.x + ',' + pos.y + ').');
-        return flatPlaces;
+        // console.log('Found ' + JSON.stringify(walkable) + ' walkable places around position (' + pos.x + ',' + pos.y + ').');
+        return walkable;
     },
 
     releaseEnergySources: function(creep) {
@@ -93,7 +95,7 @@ var creepCommons = {
                 }
             });
             if (usable) {
-                var flatPlaceCount = creepCommons.getFlatTerrain(source.pos).length;
+                var flatPlaceCount = creepCommons.getWalkableTerrain(source.pos).length;
                 creeps.forEach(function(creep) {
                     if (creep.memory.sourceId == source.id) {
                         flatPlaceCount--;
