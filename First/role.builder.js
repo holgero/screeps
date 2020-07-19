@@ -14,14 +14,13 @@ var roleBuilder = {
             o.type == LOOK_STRUCTURES && o.structure.structureType == STRUCTURE_ROAD ||
             o.type == LOOK_TERRAIN && o.terrain == "wall";
     },
-    noParking: function(room, pos) {
+    noParking: function(room, sources, pos) {
         var stuff = room.lookAt(pos);
         var filtered = _.filter(stuff, roleBuilder.cannotParkOn);
         // console.log(JSON.stringify(filtered));
         if (filtered.length>0) {
             return true;
         }
-        var sources = room.find(FIND_SOURCES);
         for (var source of sources) {
             if (source.pos.isNearTo(pos)) {
                 return true;
@@ -48,7 +47,8 @@ var roleBuilder = {
             if (targets.length) {
                 var target = targets[0];
                 if (creep.pos.inRangeTo(target.pos, 3)) {
-                    if (roleBuilder.noParking(room, creep.pos)) {
+                    var sources = room.find(FIND_SOURCES);
+                    if (roleBuilder.noParking(room, sources, creep.pos)) {
                         var top = Math.max(0, target.pos.y-3);
                         var left = Math.max(0, target.pos.x-3);
                         var bottom = Math.min(49, target.pos.y+3);
@@ -57,8 +57,10 @@ var roleBuilder = {
                         // console.log('All around target: ' + JSON.stringify(areaStuff));
                         for (var y=top; y<=bottom; y++) {
                             for (var x=left; x<=right; x++) {
-                                if (target.pos.isNearTo(x, y)) {
-                                    // skip inner circle
+                                if (target.pos.isEqualTo(x, y)) {
+                                    continue;
+                                }
+                                if (creep.pos.isEqualTo(x, y)) {
                                     continue;
                                 }
                                 var currentRow = areaStuff[y][x];
@@ -66,8 +68,13 @@ var roleBuilder = {
                                 if (_.filter(currentRow, roleBuilder.cannotParkOn).length > 0) {
                                     continue;
                                 }
+                                for (var source of sources) {
+                                    if (source.pos.isNearTo(x,y)) {
+                                        continue;
+                                    }
+                                }
                                 // console.log('Found a suitable place at (' + x + ',' + y + '): ' + JSON.stringify(currentRow));
-                                creep.moveTo(x, y);
+                                creep.moveTo(x, y, { visualizePathStyle: {stroke: '#ffffff'}, ignoreRoads: true });
                                 return;
                             }
                         }
