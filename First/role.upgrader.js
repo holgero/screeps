@@ -23,9 +23,21 @@ var roleUpgrader = {
 	    }
 
 	    if (creep.memory.upgrading) {
-            if(creep.upgradeController(creep.room.controller) == ERR_NOT_IN_RANGE) {
-                creep.moveTo(creep.room.controller, {visualizePathStyle: {stroke: '#ffffff'}});
+	        var room = creep.room;
+	        var controller = room.controller;
+            if (creep.pos.inRangeTo(controller.pos, 3)) {
+                var flags = _.filter(room.lookForAt(LOOK_FLAGS, creep.pos), function(flag) { return flag.name.startsWith('no parking'); });
+                if (flags.length > 0) {
+                    // console.log(JSON.stringify(flags));
+                } else {
+                    var err = creep.upgradeController(controller);
+                    if (err != OK) {
+                       console.log('Upgrade controller failed: ' + err);
+                    }
+                    return;
+                }
             }
+            creep.moveTo(controller, {visualizePathStyle: {stroke: '#ffffff'}});
         } else {
             commons.fetchEnergy(creep);
         }
