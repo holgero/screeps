@@ -28,14 +28,15 @@ var strategyDevelopment = {
             var from = spawn.pos;
             var targets = room.find(FIND_SOURCES);
             targets.push(room.controller);
-            targets.forEach(function(source) {
-                var path = room.findPath(from, source.pos, { ignoreCreeps: true, ignoreRoads: true, swampCost: 1});
-                path.forEach(function(pos) {
-                    if (pos.x != source.pos.x || pos.y != source.pos.y) {
-                        var err = room.createConstructionSite(pos.x, pos.y, STRUCTURE_ROAD);
-                        if (err) {
-                            console.log('Failed to place road at (' + pos.x + ',' + pos.y + '): ' + err);
-                        }
+            targets.forEach(function(target) {
+                var path = room.findPath(from, target.pos, { ignoreCreeps: true, ignoreRoads: true, swampCost: 1});
+                path.forEach(function(step) {
+                    if (target.structureType == STRUCTURE_CONTROLLER && target.pos.inRangeTo(step.x, step.y, 3) || target.pos.inRangeTo(step.x, step.y, 1)) {
+                        return;
+                    }
+                    var err = room.createConstructionSite(step.x, step.y, STRUCTURE_ROAD);
+                    if (err) {
+                        console.log('Failed to place road at (' + step.x + ',' + step.y + '): ' + err);
                     }
                 });
                 room.memory.roadsCreated = true;
@@ -49,15 +50,16 @@ var strategyDevelopment = {
             var targets = room.find(FIND_SOURCES);
             var terrain = room.getTerrain();
             targets.push(room.controller);
-            targets.forEach(function(source) {
-                var path = room.findPath(from, source.pos, { ignoreCreeps: true, ignoreRoads: true, swampCost: 1});
-                path.forEach(function(pos) {
-                    if (pos.x != source.pos.x || pos.y != source.pos.y) {
-                        if (terrain.get(pos.x, pos.y) == TERRAIN_MASK_SWAMP || terrain.get(pos.x + pos.dx, pos.y + pos.dy) == TERRAIN_MASK_SWAMP) {
-                            var err = room.createConstructionSite(pos.x, pos.y, STRUCTURE_ROAD);
-                            if (err) {
-                                console.log('Failed to place road at (' + pos.x + ',' + pos.y + '): ' + err);
-                            }
+            targets.forEach(function(target) {
+                var path = room.findPath(from, target.pos, { ignoreCreeps: true, ignoreRoads: true, swampCost: 1});
+                path.forEach(function(step) {
+                    if (target.structureType == STRUCTURE_CONTROLLER && target.pos.inRangeTo(step.x, step.y, 3) || target.pos.inRangeTo(step.x, step.y, 1)) {
+                        return;
+                    }
+                    if (terrain.get(step.x, step.y) == TERRAIN_MASK_SWAMP || terrain.get(step.x + step.dx, step.y + step.dy) == TERRAIN_MASK_SWAMP) {
+                        var err = room.createConstructionSite(step.x, step.y, STRUCTURE_ROAD);
+                        if (err) {
+                            console.log('Failed to place road at (' + step.x + ',' + step.y + '): ' + err);
                         }
                     }
                 });
