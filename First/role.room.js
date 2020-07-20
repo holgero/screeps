@@ -27,10 +27,15 @@ var roleRoom = {
                 needed.builder = 3;
                 break;
             case 3:
-            default:
                 needed.harvester = 3;
                 needed.upgrader = 5;
                 needed.builder = 3;
+                break;
+            case 4:
+            default:
+                needed.harvester = 3;
+                needed.upgrader = 7;
+                needed.builder = 4;
                 break;
         }
         var containers = room.find(FIND_STRUCTURES, { filter: {structureType: STRUCTURE_CONTAINER}});
