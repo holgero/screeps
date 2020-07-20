@@ -25,16 +25,28 @@ var roleUpgrader = {
 	    if (creep.memory.upgrading) {
 	        var room = creep.room;
 	        var controller = room.controller;
-            if (creep.pos.inRangeTo(controller.pos, 3)) {
-                var flags = _.filter(room.lookForAt(LOOK_FLAGS, creep.pos), function(flag) { return flag.name.startsWith('no parking'); });
-                if (flags.length > 0) {
-                    // console.log(JSON.stringify(flags));
-                } else {
-                    var err = creep.upgradeController(controller);
-                    if (err != OK) {
-                       console.log('Upgrade controller failed: ' + err);
+            if (creep.pos.inRangeTo(controller.pos, 4)) {
+                var sources = room.find(FIND_SOURCES);
+                if (creep.pos.inRangeTo(controller.pos, 3)) {
+                    if (commons.noParking(room, sources, creep.pos)) {
+                        var place = commons.findSuitablePlace(creep, controller, sources);
+                        if (place != null) {
+                            creep.moveTo(place, { visualizePathStyle: {stroke: '#ffffff'}, ignoreRoads: true });
+                            return;
+                        }
+                    } else {
+                        var err = creep.upgradeController(controller);
+                        if (err != OK) {
+                           console.log('Upgrade controller failed: ' + err);
+                        }
+                        return;
                     }
-                    return;
+                } else {
+                    var place = commons.findSuitablePlace(creep, controller, sources);
+                    if (place != null) {
+                        creep.moveTo(place, { visualizePathStyle: {stroke: '#ffffff'}, ignoreRoads: true });
+                        return;
+                    }
                 }
             }
             creep.moveTo(controller, {visualizePathStyle: {stroke: '#ffffff'}});
