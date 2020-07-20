@@ -8,66 +8,7 @@ var roleBuilder = {
         increaseMove: true,
         increaseWork: true,
     },
-    cannotParkOn: function(o) {
-        return o.type == LOOK_FLAGS && o.flag.name.startsWith('no parking') ||
-            o.type == LOOK_STRUCTURES && o.structure.structureType == STRUCTURE_CONTAINER ||
-            o.type == LOOK_STRUCTURES && o.structure.structureType == STRUCTURE_ROAD ||
-            o.type == LOOK_TERRAIN && o.terrain == "wall";
-    },
-    noParking: function(room, sources, pos) {
-        var stuff = room.lookAt(pos);
-        var filtered = _.filter(stuff, roleBuilder.cannotParkOn);
-        // console.log(JSON.stringify(filtered));
-        if (filtered.length>0) {
-            return true;
-        }
-        for (var source of sources) {
-            if (source.pos.isNearTo(pos)) {
-                return true;
-            }
-        }
-        return false;
-    },
-    findSuitablePlace: function(creep, target, sources) {
-        var room = creep.room;
-        var top = Math.max(0, target.pos.y-3);
-        var left = Math.max(0, target.pos.x-3);
-        var bottom = Math.min(49, target.pos.y+3);
-        var right = Math.min(target.pos.x+3);
-        var areaStuff = room.lookAtArea(top, left, bottom, right);
-        // console.log('All around target: ' + JSON.stringify(areaStuff));
-        var bestDistance = 99;
-        var place = null;
-        for (var y=top; y<=bottom; y++) {
-            for (var x=left; x<=right; x++) {
-                if (target.pos.isEqualTo(x, y)) {
-                    continue;
-                }
-                if (creep.pos.isEqualTo(x, y)) {
-                    continue;
-                }
-                var currentRow = areaStuff[y][x];
-                // console.log(x, y, JSON.stringify(currentRow));
-                if (_.filter(currentRow, roleBuilder.cannotParkOn).length > 0) {
-                    continue;
-                }
-                if (_.filter(currentRow, function(o) { return o.type == LOOK_CREEPS; }).length > 0) {
-                    continue;
-                }
-                for (var source of sources) {
-                    if (source.pos.isNearTo(x,y)) {
-                        continue;
-                    }
-                }
-                var distance = creep.pos.getRangeTo(x, y);
-                if (distance < bestDistance) {
-                    bestDistance = distance;
-                    place = creep.room.getPositionAt(x,y);
-                }
-            }
-        }
-        return place;
-    },
+
     /** @param {Creep} creep **/
     run: function(creep) {
         commons.releaseEnergySources(creep);
@@ -89,8 +30,8 @@ var roleBuilder = {
                 if (creep.pos.inRangeTo(target.pos, 4)) {
                     var sources = room.find(FIND_SOURCES);
                     if (creep.pos.inRangeTo(target.pos, 3)) {
-                        if (roleBuilder.noParking(room, sources, creep.pos)) {
-                            var place = roleBuilder.findSuitablePlace(creep, target, sources);
+                        if (commons.noParking(room, sources, creep.pos)) {
+                            var place = commons.findSuitablePlace(creep, target, sources);
                             if (place != null) {
                                 creep.moveTo(place, { visualizePathStyle: {stroke: '#ffffff'}, ignoreRoads: true });
                                 return;
@@ -103,7 +44,7 @@ var roleBuilder = {
                             return;
                         }
                     } else {
-                        var place = roleBuilder.findSuitablePlace(creep, target, sources);
+                        var place = commons.findSuitablePlace(creep, target, sources);
                         if (place != null) {
                             creep.moveTo(place, { visualizePathStyle: {stroke: '#ffffff'}, ignoreRoads: true });
                             return;

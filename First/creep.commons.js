@@ -16,6 +16,69 @@ var creepCommons = {
         return walkable;
     },
 
+    cannotParkOn: function(o) {
+        return o.type == LOOK_FLAGS && o.flag.name.startsWith('no parking') ||
+            o.type == LOOK_STRUCTURES && o.structure.structureType == STRUCTURE_CONTAINER ||
+            o.type == LOOK_STRUCTURES && o.structure.structureType == STRUCTURE_ROAD ||
+            o.type == LOOK_TERRAIN && o.terrain == "wall";
+    },
+
+    noParking: function(room, sources, pos) {
+        var stuff = room.lookAt(pos);
+        var filtered = _.filter(stuff, creepCommons.cannotParkOn);
+        // console.log(JSON.stringify(filtered));
+        if (filtered.length>0) {
+            return true;
+        }
+        for (var source of sources) {
+            if (source.pos.isNearTo(pos)) {
+                return true;
+            }
+        }
+        return false;
+    },
+
+    findSuitablePlace: function(creep, target, sources, distance=3) {
+        var room = creep.room;
+        var top = Math.max(0, target.pos.y-distance);
+        var left = Math.max(0, target.pos.x-distance);
+        var bottom = Math.min(49, target.pos.y+distance);
+        var right = Math.min(target.pos.x+distance);
+        var areaStuff = room.lookAtArea(top, left, bottom, right);
+        // console.log('All around target: ' + JSON.stringify(areaStuff));
+        var bestDistance = 99;
+        var place = null;
+        for (var y=top; y<=bottom; y++) {
+            for (var x=left; x<=right; x++) {
+                if (target.pos.isEqualTo(x, y)) {
+                    continue;
+                }
+                if (creep.pos.isEqualTo(x, y)) {
+                    continue;
+                }
+                var currentRow = areaStuff[y][x];
+                // console.log(x, y, JSON.stringify(currentRow));
+                if (_.filter(currentRow, creepCommons.cannotParkOn).length > 0) {
+                    continue;
+                }
+                if (_.filter(currentRow, function(o) { return o.type == LOOK_CREEPS; }).length > 0) {
+                    continue;
+                }
+                for (var source of sources) {
+                    if (source.pos.isNearTo(x,y)) {
+                        continue;
+                    }
+                }
+                var distance = creep.pos.getRangeTo(x, y);
+                if (distance < bestDistance) {
+                    bestDistance = distance;
+                    place = creep.room.getPositionAt(x,y);
+                }
+            }
+        }
+        return place;
+    },
+
     releaseEnergySources: function(creep) {
         if (creep.store.getFreeCapacity(RESOURCE_ENERGY)==0) {
             delete creep.memory.sourceId;
