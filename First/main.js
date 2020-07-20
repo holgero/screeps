@@ -17,6 +17,12 @@ module.exports.loop = function () {
         var room = Game.rooms[roomName];
         var controller = room.controller;
         if (controller && controller.my) {
+            if (!controller.safeMode && controller.safeModeAvailable) {
+                if (room.find(FIND_HOSTILE_CREEPS).length > 0) {
+                    var err=controller.activateSafeMode();
+                    console.log('Activated safemode: ' + err);
+                }
+            }
             roleRoom.run(room, controller);
             roleTower.run(room);
         }
