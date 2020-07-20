@@ -11,6 +11,19 @@ var roleHarvester2 = {
     run: function(creep) {
         // console.log('run');
         var room = creep.room;
+        if (creep.memory.goRenewal) {
+            if (creep.ticksToLive >= 1400) {
+                delete creep.memory.goRenewal;
+                creep.say('resume');
+            } else {
+                creep.say('renewing');
+                var spawn = room.find(FIND_MY_STRUCTURES, { filter: { structureType: STRUCTURE_SPAWN }})[0];
+                if (!creep.pos.isNearTo(spawn.pos)) {
+                    creep.moveTo(spawn.pos.x, spawn.pos.y, {visualizePathStyle: {stroke: '#ffaa00'}});
+                }
+                return;
+            }
+        }
         if (creep.memory.placeToBe) {
             // console.log('have place');
             var pos = creep.memory.placeToBe;
@@ -33,6 +46,10 @@ var roleHarvester2 = {
             if (source == null) {
                 delete creep.memory.sourceId;
             } else {
+                if (creep.ticksToLive < 200) {
+                    creep.memory.goRenewal = true;
+                    creep.memory.placeToBe = creep.pos;
+                }
                 //console.log(JSON.stringify(room.lookForAt(LOOK_RESOURCES, creep.pos)));
                 if (room.lookForAt(LOOK_RESOURCES, creep.pos).length == 0) {
                     var err = creep.harvest(source);
