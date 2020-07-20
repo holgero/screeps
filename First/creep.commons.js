@@ -124,11 +124,18 @@ var creepCommons = {
         }
 
         var droppedEnergy = room.find(FIND_DROPPED_RESOURCES, { filter: {resourceType: RESOURCE_ENERGY}});
-        if (droppedEnergy.length) {
-            if (creep.pickup(droppedEnergy[0]) == ERR_NOT_IN_RANGE) {
-                creep.moveTo(droppedEnergy[0], {visualizePathStyle: {stroke: '#ffaa00'}});
+        for (var dropped of droppedEnergy) {
+            var err = creep.pickup(dropped);
+            if (err == ERR_NOT_IN_RANGE) {
+                if (creep.pos.getRangeTo(dropped) < dropped.amount) {
+                    creep.moveTo(dropped, {visualizePathStyle: {stroke: '#ffaa00'}});
+                    return;
+                } else {
+                    console.log('Will not pickup dropped energy (' + dropped.amount + ') at (' + dropped.pos.x + ',' + dropped.pos.y + ')');
+                }
+            } else if (err == OK) {
+                return;
             }
-            return;
         }
         
         var containers = room.find(FIND_STRUCTURES, {filter: {structureType: STRUCTURE_CONTAINER}});
