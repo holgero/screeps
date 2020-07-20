@@ -7,35 +7,67 @@ var roleUpgrader = require('role.upgrader');
 var roleBuilder = require('role.builder');
 
 var roleRoom = {
+    calculateNeededCreeps: function(room, controller) {
+        var needed = {
+            harvester: 0,
+            harvester2: 0,
+            upgrader: 0,
+            builder: 0,
+        };
+        switch (controller.level) {
+            case 0:
+            case 1:
+                needed.harvester = 1;
+                needed.upgrader = 3;
+                needed.builder = 1;
+                break;
+            case 2:
+                needed.harvester = 2;
+                needed.upgrader = 5;
+                needed.builder = 3;
+                break;
+            case 3:
+            default:
+                needed.harvester = 3;
+                needed.upgrader = 5;
+                needed.builder = 3;
+                break;
+        }
+        var containers = room.find(FIND_STRUCTURES, { filter: {structureType: STRUCTURE_CONTAINER}});
+        needed.harvester2 = containers.length;
+        var construction_sites = room.find(FIND_MY_CONSTRUCTION_SITES);
+        if (construction_sites.length == 0) {
+            needed.builder = 0;
+        }
+        room.memory.needed = needed;
+    },
     run: function(room, controller) {
         const spawns = room.find(FIND_MY_STRUCTURES, { filter: { structureType: STRUCTURE_SPAWN } });
         if (!spawns) {
             return;
         }
         const spawn = spawns[0];
-        // console.log(JSON.stringify(spawn));
-        if (strategySpawn.createMissing(roleHarvester.info, 1)) {
-            if (strategySpawn.createMissing(roleUpgrader.info, 3)) {
+        
+        if (room.memory.needed === undefined || Game.time % 100 == 0) {
+            roleRoom.calculateNeededCreeps(room, controller);
+        }
+        if (Game.time % 10 == 0) {
+            if (strategySpawn.createMissing(roleHarvester.info, room.memory.needed.harvester) &&
+            strategySpawn.createMissing(roleHarvester2.info, room.memory.needed.harvester2) &&
+            strategySpawn.createMissing(roleUpgrader.info, room.memory.needed.upgrader) &&
+            strategySpawn.createMissing(roleBuilder.info, room.memory.needed.builder)) {
                 strategyDevelop.developSwampRoads(spawn);
                 strategyDevelop.developContainers(spawn);
-                strategySpawn.createMissing(roleBuilder.info, 1);
-                strategySpawn.createContainerHarvesters(roleHarvester2.info);
             }
-        }
-        if (strategyDevelop.developRoom(2, STRUCTURE_EXTENSION, room.getPositionAt(spawn.pos.x, spawn.pos.y + 2), 5)) {
-            if (strategySpawn.createMissing(roleBuilder.info, 3)) {
-                strategySpawn.createMissing(roleHarvester.info, 2);
+            if (strategyDevelop.developRoom(2, STRUCTURE_EXTENSION, room.getPositionAt(spawn.pos.x, spawn.pos.y + 2), 5)) {
                 strategyDevelop.developRoads(spawn);
-                strategySpawn.createMissing(roleUpgrader.info, 5);
             }
-        }
-        if (strategyDevelop.developRoom(3, STRUCTURE_TOWER, room.getPositionAt(spawn.pos.x, spawn.pos.y + 4), 1)) {
-            if (strategySpawn.createMissing(roleHarvester.info, 3)) {
+            if (strategyDevelop.developRoom(3, STRUCTURE_TOWER, room.getPositionAt(spawn.pos.x, spawn.pos.y + 4), 1)) {
                 strategyDevelop.developRoom(3, STRUCTURE_EXTENSION, room.getPositionAt(spawn.pos.x-2, spawn.pos.y + 6), 10);
             }
-        }
-        if (strategyDevelop.developRoom(4, STRUCTURE_STORAGE, room.getPositionAt(spawn.pos.x, spawn.pos.y + 6), 1)) {
-            // more on level 4?
+            if (strategyDevelop.developRoom(4, STRUCTURE_STORAGE, room.getPositionAt(spawn.pos.x, spawn.pos.y + 6), 1)) {
+                // more on level 4?
+            }
         }
     
         roleSpawn.run(spawn);

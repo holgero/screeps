@@ -47,11 +47,6 @@ var strategySpawn = {
         }
         return 0;
     },
-    createContainerHarvesters: function(info) {
-        var spawn = Game.spawns['Spawn1'];
-        var containers = spawn.room.find(FIND_STRUCTURES, { filter: {structureType: STRUCTURE_CONTAINER}});
-        return strategySpawn.createMissing(info, containers.length);
-    }
 }
 
 module.exports = strategySpawn;
