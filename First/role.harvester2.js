@@ -3,7 +3,7 @@ var roleHarvester2 = {
         roleName: 'harvester2',
         minimalBody: [WORK, WORK, MOVE],
         increaseCarry: false,
-        increaseMove: true,
+        increaseMove: false,
         increaseWork: true,
     },
 
