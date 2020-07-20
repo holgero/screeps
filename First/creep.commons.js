@@ -23,6 +23,13 @@ var creepCommons = {
             o.type == LOOK_TERRAIN && o.terrain == "wall";
     },
 
+    unwalkable: function(o) {
+        return o.type == LOOK_STRUCTURES && o.structure.structureType == STRUCTURE_SPAWN ||
+            o.type == LOOK_STRUCTURES && o.structure.structureType == STRUCTURE_EXTENSION ||
+            o.type == LOOK_STRUCTURES && o.structure.structureType == STRUCTURE_STORAGE ||
+            o.type == LOOK_CREEPS;
+    },
+
     noParking: function(room, sources, pos) {
         var stuff = room.lookAt(pos);
         var filtered = _.filter(stuff, creepCommons.cannotParkOn);
@@ -61,7 +68,7 @@ var creepCommons = {
                 if (_.filter(currentRow, creepCommons.cannotParkOn).length > 0) {
                     continue;
                 }
-                if (_.filter(currentRow, function(o) { return o.type == LOOK_CREEPS; }).length > 0) {
+                if (_.filter(currentRow, creepCommons.unwalkable)) {
                     continue;
                 }
                 for (var source of sources) {
@@ -87,7 +94,7 @@ var creepCommons = {
     },
 
     /** @param {Creep} creep **/
-    fetchEnergy: function(creep) {
+    fetchEnergy: function(creep, harvesting=true) {
         var room = creep.room;
 
         if (creep.memory.sourceId) {
@@ -159,6 +166,10 @@ var creepCommons = {
                 creep.memory.containerId = bestContainer.id;
                 return;
             }
+        }
+
+        if (!harvesting) {
+            return;
         }
 
         var sources = room.find(FIND_SOURCES);

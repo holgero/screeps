@@ -4,6 +4,7 @@ var roleHarvester = require('role.harvester');
 var roleHarvester2 = require('role.harvester2');
 var roleUpgrader = require('role.upgrader');
 var roleBuilder = require('role.builder');
+var roleLorry = require('role.lorry');
 
 module.exports.loop = function () {
     for (var name in Memory.creeps) {
@@ -17,7 +18,7 @@ module.exports.loop = function () {
         var room = Game.rooms[roomName];
         var controller = room.controller;
         if (controller && controller.my) {
-            if (!controller.safeMode && controller.safeModeAvailable && Game.map.getRoomStatus(room.name).status != 'novice') {
+            if (!controller.safeMode && controller.safeModeAvailable && Game.map.getRoomStatus(room.name) && Game.map.getRoomStatus(room.name).status != 'novice') {
                 if (room.find(FIND_HOSTILE_CREEPS).length > 0) {
                     var err=controller.activateSafeMode();
                     console.log('Activated safemode: ' + err);
@@ -33,17 +34,10 @@ module.exports.loop = function () {
         if (creep.spawning) {
             continue;
         }
-        if(creep.memory.role == 'harvester') {
-            roleHarvester.run(creep);
-        }
-        if(creep.memory.role == 'harvester2') {
-            roleHarvester2.run(creep);
-        }
-        if(creep.memory.role == 'upgrader') {
-            roleUpgrader.run(creep);
-        }
-        if(creep.memory.role == 'builder') {
-            roleBuilder.run(creep);
+        for (var role of [roleHarvester, roleHarvester2, roleUpgrader, roleBuilder, roleLorry]) {
+            if (creep.memory.role == role.info.roleName) {
+                role.run(creep);
+            }
         }
     }
 }
