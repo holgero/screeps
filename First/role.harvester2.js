@@ -33,11 +33,14 @@ var roleHarvester2 = {
             if (source == null) {
                 delete creep.memory.sourceId;
             } else {
-                var err = creep.harvest(source);
-                if (err == ERR_NOT_ENOUGH_RESOURCES && creep.ticksToLive < 100) {
-                    // console.log('Source exhausted');
-                } else if (err != OK) {
-                    console.log('Harvesting ' + JSON.stringify(source) + ' failed: ' + err);
+                //console.log(JSON.stringify(room.lookForAt(LOOK_RESOURCES, creep.pos)));
+                if (room.lookForAt(LOOK_RESOURCES, creep.pos).length == 0) {
+                    var err = creep.harvest(source);
+                    if (err == ERR_NOT_ENOUGH_RESOURCES) {
+                        // console.log('Source exhausted');
+                    } else if (err != OK) {
+                        console.log('Harvesting ' + JSON.stringify(source) + ' failed: ' + err);
+                    }
                 }
                 return;
             }
