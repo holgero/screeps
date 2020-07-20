@@ -16,7 +16,7 @@ module.exports.loop = function () {
     for (var roomName in Game.rooms) {
         var room = Game.rooms[roomName];
         var controller = room.controller;
-        if (controller.my) {
+        if (controller && controller.my) {
             roleRoom.run(room, controller);
             roleTower.run(room);
         }
