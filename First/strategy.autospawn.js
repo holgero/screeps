@@ -12,7 +12,7 @@ var strategySpawn = {
         if (spawn.room.controller.level >= 2) {
             creepAdditions++;
         }
-        creepAdditions += Math.ceil(spawn.room.find(FIND_MY_STRUCTURES, {filter: { structureType: STRUCTURE_EXTENSION }}).length/1.5);
+        creepAdditions += Math.ceil(spawn.room.find(FIND_MY_STRUCTURES, {filter: { structureType: STRUCTURE_EXTENSION }}).length/2);
         var body = info.minimalBody.slice();
         while (creepAdditions > 0) {
             if (creepAdditions > 0 && info.increaseMove) {
@@ -23,7 +23,7 @@ var strategySpawn = {
                 body.push(CARRY);
                 creepAdditions--;
             }
-            if (creepAdditions > 0 && info.increaseMove) {
+            if (creepAdditions > 0 && info.increaseMove && info.increaseWork && info.increaseCarry) {
                 body.push(MOVE);
                 creepAdditions--;
             }

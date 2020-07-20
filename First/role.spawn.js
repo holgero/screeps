@@ -18,6 +18,9 @@ var roleSpawn = {
                 var err = spawn.recycleCreep(creep);
                 console.log('Recycle creep "' + creep.name + '": ' + err);
             } else if (creep.my && creep.ticksToLive < 1000) {
+                if (spawn.store[RESOURCE_ENERGY] < 200) {
+                    return;
+                }
                 var err = spawn.renewCreep(creep);
                 console.log('Renew creep "' + creep.name + '": ' + err);
             }

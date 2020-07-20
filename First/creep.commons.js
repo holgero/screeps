@@ -42,13 +42,21 @@ var creepCommons = {
         if (creep.memory.containerId) {
             // console.log('Take from container ' + creep.memory.containerId);
             var container = Game.getObjectById(creep.memory.containerId);
-            if (container == null) {
+            if (!container) {
                 delete creep.memory.containerId;
             } else {
-                if (creep.withdraw(container, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
-                    creep.moveTo(container, {visualizePathStyle: {stroke: '#ffaa00'}});
+                var err = creep.withdraw(container, RESOURCE_ENERGY);
+                if (err == OK) {
+                    return;
                 }
-                return;
+                if (err == ERR_NOT_IN_RANGE) {
+                    creep.moveTo(container, {visualizePathStyle: {stroke: '#ffaa00'}});
+                    return;
+                } else if (err == ERR_NOT_ENOUGH_RESOURCES) {
+                    delete creep.memory.containerId;
+                } else {
+                    console.log('Get energy from container failed with: ' + err);
+                }
             }
         }
 
