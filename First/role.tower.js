@@ -8,7 +8,7 @@ var roleTower = {
                     if (10*tower.store[RESOURCE_ENERGY]/tower.store.getCapacity(RESOURCE_ENERGY)<i) {
                         break;
                     }
-                    if (i>=5 && Game.time % 20 !=0) {
+                    if (i>=5 && Game.time % 5 !=0) {
                         break;
                     }
                     var closestDamagedStructure = tower.pos.findClosestByRange(FIND_STRUCTURES, {

@@ -131,7 +131,7 @@ var creepCommons = {
                     creep.moveTo(dropped, {visualizePathStyle: {stroke: '#ffaa00'}});
                     return;
                 } else {
-                    console.log('Will not pickup dropped energy (' + dropped.amount + ') at (' + dropped.pos.x + ',' + dropped.pos.y + ')');
+                    // console.log('Will not pickup dropped energy (' + dropped.amount + ') at (' + dropped.pos.x + ',' + dropped.pos.y + ')');
                 }
             } else if (err == OK) {
                 return;
