@@ -14,9 +14,12 @@ var roleSpawn = {
         nearbyCreeps.forEach(function(nearCreep) {
             var creep = nearCreep.creep;
             // console.log('Inspect creep ' + JSON.stringify(creep));
-            if (creep.my && creep.ticksToLive < 1000) {
+            if (creep.memory.role =='builder' && spawn.room.memory.needed.builder == 0) {
+                var err = spawn.recycleCreep(creep);
+                console.log('Recycle creep "' + creep.name + '": ' + err);
+            } else if (creep.my && creep.ticksToLive < 1000) {
                 var err = spawn.renewCreep(creep);
-                // console.log('Renew creep: ' + err);
+                console.log('Renew creep "' + creep.name + '": ' + err);
             }
         });
     }
