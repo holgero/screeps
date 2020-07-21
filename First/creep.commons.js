@@ -94,6 +94,33 @@ var creepCommons = {
             delete creep.memory.containerId;
         }
     },
+    
+    findSuitableContainer: function(creep, room, creeps, useStorage) {
+        if (useStorage && room.storage && room.storage.store[RESOURCE_ENERGY] > creep.store.getFreeCapacity(RESOURCE_ENERGY)) {
+            creep.memory.containerId = room.storage.id;
+            return;
+        }
+        for (var tombstone of room.find(FIND_TOMBSTONES)) {
+            if (tombstone.store[RESOURCE_ENERGY] > 0) {
+                creep.memory.containerId = tombstone.id;
+                return;
+            }
+        }
+        var containers = room.find(FIND_STRUCTURES, {filter: {structureType: STRUCTURE_CONTAINER}});
+        var maxEnergy=creep.store.getFreeCapacity(RESOURCE_ENERGY);
+        containers.forEach(function(container) {
+            var energy=container.store.getUsedCapacity(RESOURCE_ENERGY);
+            creeps.forEach(function(creep) {
+                if (creep.memory.containerId == container.id) {
+                    energy-=creep.store.getCapacity(RESOURCE_ENERGY);
+                }
+            });
+            if (energy >= maxEnergy) {
+                maxEnergy = energy;
+                creep.memory.containerId = container.id;
+            }
+        });
+    },
 
     /** @param {Creep} creep **/
     fetchEnergy: function(creep, harvesting=true, useStorage=true) {
@@ -123,28 +150,7 @@ var creepCommons = {
         }
 
         if (!creep.memory.containerId) {
-            if (useStorage && room.storage && room.storage.store[RESOURCE_ENERGY] > creep.store.getFreeCapacity(RESOURCE_ENERGY)) {
-                creep.memory.containerId = room.storage.id;
-            }
-            for (var tombstone of room.find(FIND_TOMBSTONES)) {
-                if (tombstone.store[RESOURCE_ENERGY] > 0) {
-                    creep.memory.containerId = tombstone.id;
-                }
-            }
-            var containers = room.find(FIND_STRUCTURES, {filter: {structureType: STRUCTURE_CONTAINER}});
-            var maxEnergy=creep.store.getFreeCapacity(RESOURCE_ENERGY);
-            containers.forEach(function(container) {
-                var energy=container.store.getUsedCapacity(RESOURCE_ENERGY);
-                creeps.forEach(function(creep) {
-                    if (creep.memory.containerId == container.id) {
-                        energy-=creep.store.getCapacity(RESOURCE_ENERGY);
-                    }
-                });
-                if (energy >= maxEnergy) {
-                    maxEnergy = energy;
-                    creep.memory.containerId = container;
-                }
-            });
+            creepCommons.findSuitableContainer(creep, room, creeps, useStorage);
         }
 
         if (creep.memory.containerId) {
