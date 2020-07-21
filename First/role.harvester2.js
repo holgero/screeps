@@ -12,7 +12,7 @@ var roleHarvester2 = {
         // console.log('run');
         var room = creep.room;
         if (creep.memory.goRenewal) {
-            if (creep.ticksToLive >= 1400) {
+            if (creep.ticksToLive >= 1300) {
                 delete creep.memory.goRenewal;
                 creep.say('resume');
             } else {
