@@ -27,6 +27,7 @@ var creepCommons = {
         return o.type == LOOK_STRUCTURES && o.structure.structureType == STRUCTURE_SPAWN ||
             o.type == LOOK_STRUCTURES && o.structure.structureType == STRUCTURE_EXTENSION ||
             o.type == LOOK_STRUCTURES && o.structure.structureType == STRUCTURE_STORAGE ||
+            o.type == LOOK_STRUCTURES && o.structure.structureType == STRUCTURE_WALL ||
             o.type == LOOK_CREEPS;
     },
 
