@@ -53,7 +53,7 @@ var roleLorry = {
                 }
             }
         } else {
-            commons.fetchEnergy(creep, false);
+            commons.fetchEnergy(creep, false, false);
         }
 	}
 };

@@ -96,7 +96,7 @@ var creepCommons = {
     },
 
     /** @param {Creep} creep **/
-    fetchEnergy: function(creep, harvesting=true) {
+    fetchEnergy: function(creep, harvesting=true, useStorage=true) {
         var room = creep.room;
 
         if (creep.memory.sourceId) {
@@ -109,6 +109,10 @@ var creepCommons = {
                 }
                 return;
             }
+        }
+
+        if (!creep.memory.containerId && useStorage && room.storage.store[RESOURCE_ENERGY] > creep.store.getFreeCapacity(RESOURCE_ENERGY)) {
+            creep.memory.containerId = room.storage.id;
         }
 
         if (creep.memory.containerId) {

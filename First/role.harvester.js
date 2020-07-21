@@ -53,7 +53,7 @@ var roleHarvester = {
                 }
             }
         } else {
-            commons.fetchEnergy(creep);
+            commons.fetchEnergy(creep, true, false);
         }
 	}
 };
