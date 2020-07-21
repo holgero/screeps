@@ -28,10 +28,13 @@ var roleBuilder = {
             if (targets.length) {
                 var target = targets[0];
                 if (creep.pos.inRangeTo(target.pos, 4)) {
+                    // console.log("Target is: " + JSON.stringify(target));
                     var sources = room.find(FIND_SOURCES);
                     if (creep.pos.inRangeTo(target.pos, 3)) {
                         if (commons.noParking(room, sources, creep.pos)) {
+                            // console.log('No parking here');
                             var place = commons.findSuitablePlace(creep, target, sources);
+                            // console.log(JSON.stringify(place));
                             if (place != null) {
                                 creep.moveTo(place, { visualizePathStyle: {stroke: '#ffffff'}, ignoreRoads: true });
                                 return;

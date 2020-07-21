@@ -68,9 +68,11 @@ var creepCommons = {
                 if (_.filter(currentRow, creepCommons.cannotParkOn).length > 0) {
                     continue;
                 }
-                if (_.filter(currentRow, creepCommons.unwalkable)) {
+                // console.log(x, y, JSON.stringify(currentRow));
+                if (_.filter(currentRow, creepCommons.unwalkable).length > 0) {
                     continue;
                 }
+                // console.log(x, y, JSON.stringify(currentRow));
                 for (var source of sources) {
                     if (source.pos.isNearTo(x,y)) {
                         continue;
