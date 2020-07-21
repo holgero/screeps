@@ -111,7 +111,7 @@ var creepCommons = {
             }
         }
 
-        if (!creep.memory.containerId && useStorage && room.storage.store[RESOURCE_ENERGY] > creep.store.getFreeCapacity(RESOURCE_ENERGY)) {
+        if (!creep.memory.containerId && useStorage && room.storage && room.storage.store[RESOURCE_ENERGY] > creep.store.getFreeCapacity(RESOURCE_ENERGY)) {
             creep.memory.containerId = room.storage.id;
         }
 
