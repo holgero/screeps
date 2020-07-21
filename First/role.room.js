@@ -36,7 +36,7 @@ var roleRoom = {
             case 4:
             default:
                 needed.harvester = 3;
-                needed.upgrader = 6;
+                needed.upgrader = 8;
                 needed.builder = 3;
                 break;
         }
@@ -50,6 +50,26 @@ var roleRoom = {
         }
         room.memory.needed = needed;
     },
+    calculateExistingCreeps: function(room) {
+        var existing = {
+            harvester: 0,
+            harvester2: 0,
+            upgrader: 0,
+            builder: 0,
+            lorry: 0,
+        };
+        const creeps = room.find(FIND_MY_CREEPS);
+        creeps.forEach(function(creep){
+           switch (creep.memory.role) {
+               case roleHarvester.info.roleName: existing.harvester++; break;
+               case roleLorry.info.roleName: existing.lorry++; break;
+               case roleHarvester2.info.roleName: existing.harvester2++; break;
+               case roleUpgrader.info.roleName: existing.upgrader++; break;
+               case roleBuilder.info.roleName: existing.builder++; break;
+           }
+        });
+        room.memory.existing = existing;
+    },
     run: function(room, controller) {
         const spawns = room.find(FIND_MY_STRUCTURES, { filter: { structureType: STRUCTURE_SPAWN } });
         if (!spawns) {
@@ -57,8 +77,9 @@ var roleRoom = {
         }
         const spawn = spawns[0];
         
-        if (room.memory.needed === undefined || Game.time % 100 == 0) {
+        if (room.memory.needed === undefined || room.memory.existing === undefined || Game.time % 100 == 0) {
             roleRoom.calculateNeededCreeps(room, controller);
+            roleRoom.calculateExistingCreeps(room);
         }
         if (Game.time % 10 == 0) {
             if (strategySpawn.createMissing(roleHarvester.info, room.memory.needed.harvester) &&

@@ -21,9 +21,11 @@ var roleSpawn = {
                 if (spawn.store[RESOURCE_ENERGY] < 200) {
                     return;
                 }
-                var err = spawn.renewCreep(creep);
-                if (err != OK) {
-                    console.log('Renew creep "' + creep.name + '": ' + err);
+                if (spawn.room.memory.needed[creep.memory.role] >= spawn.room.memory.existing[creep.memory.role]) {
+                    var err = spawn.renewCreep(creep);
+                    if (err != OK) {
+                        console.log('Renew creep "' + creep.name + '": ' + err);
+                    }
                 }
             }
         });
