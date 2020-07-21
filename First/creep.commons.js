@@ -98,7 +98,18 @@ var creepCommons = {
     /** @param {Creep} creep **/
     fetchEnergy: function(creep, harvesting=true, useStorage=true) {
         var room = creep.room;
+        var creeps = room.find(FIND_MY_CREEPS);
 
+        for (var dropped of room.find(FIND_DROPPED_RESOURCES, { filter: {resourceType: RESOURCE_ENERGY}})) {
+            var err = creep.pickup(dropped);
+            if (err == ERR_NOT_IN_RANGE) {
+                if (creep.pos.getRangeTo(dropped) < dropped.amount) {
+                    creep.moveTo(dropped, {visualizePathStyle: {stroke: '#ffaa00'}});
+                    return;
+                }
+            }
+        }
+        
         if (creep.memory.sourceId) {
             var source = Game.getObjectById(creep.memory.sourceId);
             if (!source) {
@@ -111,8 +122,29 @@ var creepCommons = {
             }
         }
 
-        if (!creep.memory.containerId && useStorage && room.storage && room.storage.store[RESOURCE_ENERGY] > creep.store.getFreeCapacity(RESOURCE_ENERGY)) {
-            creep.memory.containerId = room.storage.id;
+        if (!creep.memory.containerId) {
+            if (useStorage && room.storage && room.storage.store[RESOURCE_ENERGY] > creep.store.getFreeCapacity(RESOURCE_ENERGY)) {
+                creep.memory.containerId = room.storage.id;
+            }
+            for (var tombstone of room.find(FIND_TOMBSTONES)) {
+                if (tombstone.store[RESOURCE_ENERGY] > 0) {
+                    creep.memory.containerId = tombstone.id;
+                }
+            }
+            var containers = room.find(FIND_STRUCTURES, {filter: {structureType: STRUCTURE_CONTAINER}});
+            var maxEnergy=creep.store.getFreeCapacity(RESOURCE_ENERGY);
+            containers.forEach(function(container) {
+                var energy=container.store.getUsedCapacity(RESOURCE_ENERGY);
+                creeps.forEach(function(creep) {
+                    if (creep.memory.containerId == container.id) {
+                        energy-=creep.store.getCapacity(RESOURCE_ENERGY);
+                    }
+                });
+                if (energy >= maxEnergy) {
+                    maxEnergy = energy;
+                    creep.memory.containerId = container;
+                }
+            });
         }
 
         if (creep.memory.containerId) {
@@ -133,44 +165,6 @@ var creepCommons = {
                 } else {
                     console.log('Get energy from container failed with: ' + err);
                 }
-            }
-        }
-
-        var droppedEnergy = room.find(FIND_DROPPED_RESOURCES, { filter: {resourceType: RESOURCE_ENERGY}});
-        for (var dropped of droppedEnergy) {
-            var err = creep.pickup(dropped);
-            if (err == ERR_NOT_IN_RANGE) {
-                if (creep.pos.getRangeTo(dropped) < dropped.amount) {
-                    creep.moveTo(dropped, {visualizePathStyle: {stroke: '#ffaa00'}});
-                    return;
-                } else {
-                    // console.log('Will not pickup dropped energy (' + dropped.amount + ') at (' + dropped.pos.x + ',' + dropped.pos.y + ')');
-                }
-            } else if (err == OK) {
-                return;
-            }
-        }
-        
-        var containers = room.find(FIND_STRUCTURES, {filter: {structureType: STRUCTURE_CONTAINER}});
-        var creeps = room.find(FIND_MY_CREEPS);
-        if (containers.length) {
-            var bestContainer = null;
-            var maxEnergy=creep.store.getFreeCapacity(RESOURCE_ENERGY);
-            containers.forEach(function(container) {
-                var energy=container.store.getUsedCapacity(RESOURCE_ENERGY);
-                creeps.forEach(function(creep) {
-                    if (creep.memory.containerId == container.id) {
-                        energy-=creep.store.getCapacity(RESOURCE_ENERGY);
-                    }
-                });
-                if (energy >= maxEnergy) {
-                    maxEnergy = energy;
-                    bestContainer = container;
-                }
-            });
-            if (bestContainer) {
-                creep.memory.containerId = bestContainer.id;
-                return;
             }
         }
 
