@@ -36,7 +36,10 @@ var roleBuilder = {
                             var place = commons.findSuitablePlace(creep, target, sources);
                             // console.log(JSON.stringify(place));
                             if (place != null) {
-                                creep.moveTo(place, { visualizePathStyle: {stroke: '#ffffff'}, ignoreRoads: true });
+                                var err = creep.moveTo(place, { visualizePathStyle: {stroke: '#ffffff'}, ignoreRoads: true });
+                                if (err != OK) {
+                                    // console.log(err);
+                                }
                                 return;
                             }
                         } else {

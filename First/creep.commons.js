@@ -86,6 +86,9 @@ var creepCommons = {
                 }
             }
         }
+        if (!place) {
+            // console.log('Did not find a place near: ' + JSON.stringify(target.pos));
+        }
         return place;
     },
 
