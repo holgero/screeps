@@ -14,7 +14,7 @@ var roleSpawn = {
         nearbyCreeps.forEach(function(nearCreep) {
             var creep = nearCreep.creep;
             // console.log('Inspect creep ' + JSON.stringify(creep));
-            if (creep.memory.role =='builder' && spawn.room.memory.needed.builder == 0) {
+            if (creep.my && creep.memory.role =='builder' && spawn.room.memory.needed.builder == 0) {
                 var err = spawn.recycleCreep(creep);
                 console.log('Recycle creep "' + creep.name + '": ' + err);
             } else if (creep.my && (creep.memory.role == 'harvester2' || creep.ticksToLive < 1000)) {
