@@ -10,7 +10,7 @@ var strategyDevelopment = {
         var existing = room.find(FIND_MY_STRUCTURES, { filter: {structureType: type}});
         if (existing.length < count) {
             if (room.find(FIND_MY_CONSTRUCTION_SITES, { filter: {structureType: type}}).length < 1) {
-                var x = position.x+existing.length-Math.ceil(count/2);
+                var x = position.x;
                 console.log(LOOK_CONSTRUCTION_SITES, x, position.y);
                 while (_.filter(room.lookAt(x, position.y), function(s) {return s.type == 'constructionSite'}).length) {
                     x++;
