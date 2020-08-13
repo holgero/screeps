@@ -55,7 +55,7 @@ var roleHarvester2 = {
                     creep.memory.placeToBe = creep.pos;
                 }
 		var container = room.lookForAt(LOOK_STRUCTURES, creep.pos)[0];
-		console.log(JSON.stringify('My container: ' + container));
+		// console.log(JSON.stringify('My container: ' + container));
 		if (container.store.getFreeCapacity(RESOURCE_ENERGY) > 20) {
                     var err = creep.harvest(source);
                     if (err == ERR_NOT_ENOUGH_RESOURCES) {
