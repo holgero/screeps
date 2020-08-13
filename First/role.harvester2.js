@@ -54,8 +54,9 @@ var roleHarvester2 = {
                     creep.memory.goRenewal = true;
                     creep.memory.placeToBe = creep.pos;
                 }
-                //console.log(JSON.stringify(room.lookForAt(LOOK_RESOURCES, creep.pos)));
-                if (room.lookForAt(LOOK_RESOURCES, creep.pos).length == 0) {
+		var container = room.lookForAt(LOOK_STRUCTURES, creep.pos)[0];
+		console.log(JSON.stringify('My container: ' + container));
+		if (container.store.getFreeCapacity(RESOURCE_ENERGY) > 20) {
                     var err = creep.harvest(source);
                     if (err == ERR_NOT_ENOUGH_RESOURCES) {
                         // console.log('Source exhausted');
