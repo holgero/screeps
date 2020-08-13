@@ -29,10 +29,15 @@ var roleLorry = {
         function ordinalOf(target) {
             switch (target.structureType) {
                 case STRUCTURE_SPAWN: return 1;
-                case STRUCTURE_EXTENSION: return 2;
-                case STRUCTURE_TOWER: return 3;
-                case STRUCTURE_STORAGE: return 4;
-                default: return 5;
+                case STRUCTURE_TOWER:
+		    if (target.store.getFreeCapacity() < target.store.getCapacity()/2) {
+			return 2;
+		    } else {
+			return 4;
+		    }
+                case STRUCTURE_EXTENSION: return 3;
+                case STRUCTURE_STORAGE: return 5;
+                default: return 6;
             }
         };
         targets.sort((a,b) => ordinalOf(a) - ordinalOf(b));
