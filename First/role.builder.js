@@ -25,7 +25,7 @@ var roleBuilder = {
 
 	    if (creep.memory.building) {
 	        var room = creep.room;
-    		do {
+    		for (var ii=0; ii<3; ii++) {
     		    var target = Game.getObjectById(creep.memory.targetId);
     		    if (!target) {
     		        var targets = room.find(FIND_CONSTRUCTION_SITES);
@@ -47,6 +47,10 @@ var roleBuilder = {
     		        var sources = room.find(FIND_SOURCES);
     		        place = commons.findSuitablePlace(creep, target, sources);
     		        creep.memory.placeToBe = place;
+    		        if (!place) {
+    		            console.log('failed to find a place near target ' + JSON.stringify(target));
+    		            return;
+    		        }
     		    }
     		    if (place && target) {
     		        if (creep.pos.x == place.x && creep.pos.y == place.y) {
@@ -56,20 +60,21 @@ var roleBuilder = {
                         }
                         return;
     		        } else {
-				if (creep.pos.isNearTo(place.x, place.y) && room.lookForAt(LOOK_CREEPS, place.x, place.y).length) {
-				    delete creep.memory.placeToBe;
-				} else {
-        			    var err = creep.moveTo(place.x, place.y, {visualizePathStyle: {stroke: '#ffffff'}});
-        			    if (err == OK || err == ERR_TIRED) {
-            				return;
-        			    }
-        			    console.log("Failed moveTo(" + JSON.stringify(place) + "), err: " + err);
-        			    delete creep.memory.placeToBe;
-        			    place = null;
-				}
+        				if (creep.pos.isNearTo(place.x, place.y) && room.lookForAt(LOOK_CREEPS, place.x, place.y).length) {
+        				    console.log('Place to be (' + JSON.stringify(place) + ') is blocked!');
+        				    delete creep.memory.placeToBe;
+        				} else {
+            			    var err = creep.moveTo(place.x, place.y, {visualizePathStyle: {stroke: '#ffffff'}});
+            			    if (err == OK || err == ERR_TIRED || err == ERR_NO_PATH) {
+                				return;
+            			    }
+            			    console.log("Failed moveTo(" + JSON.stringify(place) + "), err: " + err);
+            			    delete creep.memory.placeToBe;
+        				}
     		        }
     		    }
-    		} while (true);
+    		}
+    		console.log('Loop failed');
 	    } else {
                 commons.fetchEnergy(creep);
             }
