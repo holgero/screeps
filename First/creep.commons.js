@@ -20,6 +20,7 @@ var creepCommons = {
         return o.type == LOOK_FLAGS && o.flag.name.startsWith('no parking') ||
             o.type == LOOK_STRUCTURES && o.structure.structureType == STRUCTURE_CONTAINER ||
             o.type == LOOK_STRUCTURES && o.structure.structureType == STRUCTURE_ROAD ||
+            o.type == LOOK_STRUCTURES && o.structure.structureType == STRUCTURE_EXTENSION ||
             o.type == LOOK_TERRAIN && o.terrain == "wall";
     },
 
