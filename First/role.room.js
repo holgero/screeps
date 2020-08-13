@@ -100,9 +100,9 @@ var roleRoom = {
                 if (strategyDevelop.developRoom(3, STRUCTURE_TOWER, room.getPositionAt(spawn.pos.x, spawn.pos.y + 4), 1)) {
                     strategyDevelop.developRoom(3, STRUCTURE_EXTENSION, room.getPositionAt(spawn.pos.x-2, spawn.pos.y + 3), 10);
                 }
-                if (strategyDevelop.developRoom(4, STRUCTURE_STORAGE, room.getPositionAt(spawn.pos.x, spawn.pos.y + 5), 1)) {
-                    if (strategyDevelop.developRoom(4, STRUCTURE_EXTENSION, room.getPositionAt(spawn.pos.x-2, spawn.pos.y + 6), 15)) {
-                        strategyDevelop.developRoom(4, STRUCTURE_EXTENSION, room.getPositionAt(spawn.pos.x-2, spawn.pos.y + 7), 20);
+                if (strategyDevelop.developRoom(4, STRUCTURE_STORAGE, room.getPositionAt(spawn.pos.x, spawn.pos.y + 6), 1)) {
+                    if (strategyDevelop.developRoom(4, STRUCTURE_EXTENSION, room.getPositionAt(spawn.pos.x-2, spawn.pos.y + 7), 15)) {
+                        strategyDevelop.developRoom(4, STRUCTURE_EXTENSION, room.getPositionAt(spawn.pos.x-2, spawn.pos.y + 8), 20);
                     }
                 }
                 if (strategyDevelop.developRoom(5, STRUCTURE_TOWER, room.getPositionAt(spawn.pos.x - 4, spawn.pos.y), 2)) {
