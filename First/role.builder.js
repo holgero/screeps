@@ -15,6 +15,7 @@ var roleBuilder = {
 
 	    if (creep.memory.building && creep.store[RESOURCE_ENERGY] == 0) {
             creep.memory.building = false;
+	    delete creep.memory.placeToBe;
             creep.say('🔄 harvest');
 	    }
 	    if (!creep.memory.building && creep.store.getFreeCapacity(RESOURCE_ENERGY) == 0) {
@@ -24,50 +25,54 @@ var roleBuilder = {
 
 	    if (creep.memory.building) {
 	        var room = creep.room;
-	        var targets = room.find(FIND_CONSTRUCTION_SITES);
-            if (targets.length) {
-                var target = targets[0];
-                if (creep.pos.inRangeTo(target.pos, 4)) {
-                    // console.log("Target is: " + JSON.stringify(target));
-                    var sources = room.find(FIND_SOURCES);
-                    if (creep.pos.inRangeTo(target.pos, 3)) {
-                        if (commons.noParking(room, sources, creep.pos)) {
-                            // console.log('No parking here');
-                            var place = commons.findSuitablePlace(creep, target, sources);
-                            // console.log(JSON.stringify(place));
-                            if (place != null) {
-                                var err = creep.moveTo(place, { visualizePathStyle: {stroke: '#ffffff'}, ignoreRoads: true });
-                                if (err != OK) {
-                                    // console.log(err);
-                                }
-                                return;
-                            }
-                        } else {
-                            var err = creep.build(target);
-                            if (err != OK) {
-                               console.log('Build failed: ' + err);
-                            }
-                            return;
+    		do {
+    		    var target = Game.getObjectById(creep.memory.targetId);
+    		    if (!target) {
+    		        var targets = room.find(FIND_CONSTRUCTION_SITES);
+    		        if (targets.length) {
+        			    target = targets[0];
+        			    creep.memory.targetId = target.id;
+        			    delete creep.memory.placeToBe;
+    		        } else {
+        			    var spawn = Game.spawns['Spawn1'];
+        			    if (creep.transfer(spawn, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
+            				creep.say('park');
+            				creep.moveTo(spawn, {visualizePathStyle: {stroke: '#ffffff'}});
+        			    }
+        			    return;
+    		        }
+    		    }
+    		    var place = creep.memory.placeToBe;
+    		    if (!place) {
+    		        var sources = room.find(FIND_SOURCES);
+    		        place = commons.findSuitablePlace(creep, target, sources);
+    		        creep.memory.placeToBe = place;
+    		    }
+    		    if (place && target) {
+    		        if (creep.pos.x == place.x && creep.pos.y == place.y) {
+                        var err = creep.build(target);
+                        if (err != OK) {
+                           console.log('Build failed: ' + err);
                         }
-                    } else {
-                        var place = commons.findSuitablePlace(creep, target, sources);
-                        if (place != null) {
-                            creep.moveTo(place, { visualizePathStyle: {stroke: '#ffffff'}, ignoreRoads: true });
-                            return;
-                        }
-                    }
-                }
-                creep.moveTo(target, {visualizePathStyle: {stroke: '#ffffff'}});
-            } else {
-                var spawn = Game.spawns['Spawn1'];
-                if (creep.transfer(spawn, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
-                    creep.say('park');
-                    creep.moveTo(spawn, {visualizePathStyle: {stroke: '#ffffff'}});
-                }
-            }
+                        return;
+    		        } else {
+				if (creep.pos.isNearTo(place.x, place.y) && room.lookForAt(LOOK_CREEPS, place.x, place.y).length) {
+				    delete creep.memory.placeToBe;
+				} else {
+        			    var err = creep.moveTo(place.x, place.y, {visualizePathStyle: {stroke: '#ffffff'}});
+        			    if (err == OK || err == ERR_TIRED) {
+            				return;
+        			    }
+        			    console.log("Failed moveTo(" + JSON.stringify(place) + "), err: " + err);
+        			    delete creep.memory.placeToBe;
+        			    place = null;
+				}
+    		        }
+    		    }
+    		} while (true);
 	    } else {
-            commons.fetchEnergy(creep);
-        }
+                commons.fetchEnergy(creep);
+            }
 	}
 };
 
