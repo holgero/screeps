@@ -11,6 +11,9 @@ var roleHarvester2 = {
     run: function(creep) {
         // console.log('run');
         var room = creep.room;
+	if (!creep.memory.renewals) {
+		creep.memory.renewals = 5;
+	}
         if (creep.memory.goRenewal) {
             if (creep.ticksToLive >= 1300) {
                 delete creep.memory.goRenewal;
@@ -46,7 +49,8 @@ var roleHarvester2 = {
             if (source == null) {
                 delete creep.memory.sourceId;
             } else {
-                if (creep.ticksToLive < 200) {
+                if (creep.ticksToLive < 200 && creep.memory.renewals > 1) {
+		    creep.memory.renewals--;
                     creep.memory.goRenewal = true;
                     creep.memory.placeToBe = creep.pos;
                 }
