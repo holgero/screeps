@@ -30,7 +30,7 @@ var roleLorry = {
             switch (target.structureType) {
                 case STRUCTURE_SPAWN: return 1;
                 case STRUCTURE_TOWER:
-		    if (target.store.getFreeCapacity() < target.store.getCapacity()/2) {
+		    if (target.store.getFreeCapacity() > target.store.getCapacity()/2) {
 			return 2;
 		    } else {
 			return 4;
