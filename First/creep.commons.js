@@ -10,6 +10,7 @@ var creepCommons = {
         // return values: 0: arrived, 1: moving, 2: waiting
         if (creep.pos.isEqualTo(position)) {
             delete creep.memory.movePath;
+            delete creep.memory.waitCounter;
             return 0;
         }
         var room = creep.room;
@@ -18,6 +19,7 @@ var creepCommons = {
             path = Room.deserializePath(creep.memory.movePath);
             // console.log(creep.name + ", cached path: " + JSON.stringify(path));
             if (!path.length || path[path.length-1].x != position.x || path[path.length-1].y != position.y) {
+                delete creep.memory.waitCounter;
                 delete creep.memory.movePath;
             }
         }
@@ -38,6 +40,7 @@ var creepCommons = {
         if (!otherCreeps.length) {
             var err = creep.move(path[0].direction);
             // console.log(creep.name + ", going " + path[0].direction + " got: " + err);
+            delete creep.memory.waitCounter;
             return 1;
         }
         var otherCreep = otherCreeps[0];
@@ -68,7 +71,19 @@ var creepCommons = {
         if (creep.pos.isEqualTo(otherCreepsPath[0].x, otherCreepsPath[0].y)) {
             // the other creep intends to move to my position, so we can switch positions
             creep.move(path[0].direction);
+            delete creep.memory.waitCounter;
             return 1;
+        }
+        if (!creep.memory.waitCounter) {
+            creep.memory.waitCounter = 10;
+        } else {
+            creep.memory.waitCounter--;
+            if (!creep.memory.waitCounter) {
+                console.log("Waited too long, try a new path avoiding other creeps");
+                var path = room.findPath(creep.pos, position, {ignoreCreeps: false});
+                console.log("Calculated path: " + JSON.stringify(path));
+                creep.memory.movePath = Room.serializePath(path);
+            }
         }
         // keep distance to the other creep
         return 2;
