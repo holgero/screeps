@@ -1,4 +1,73 @@
 var creepCommons = {
+    visualizePath: function(room, path) {
+        var points = [];
+        path.forEach(function(pos) {
+           points.push([pos.x, pos.y]);
+        });
+        room.visual.poly(points, {fill: 'transparent', stroke: '#ffaa00', lineStyle: 'dashed', strokeWidth: .15, opacity: .1 });
+    },
+    moveTo: function(creep, position) {
+        // return values: 0: arrived, 1: moving, 2: waiting
+        if (creep.pos.isEqualTo(position)) {
+            delete creep.memory.movePath;
+            return 0;
+        }
+        var room = creep.room;
+        var path;
+        if (creep.memory.movePath) {
+            path = Room.deserializePath(creep.memory.movePath);
+            // console.log(creep.name + ", cached path: " + JSON.stringify(path));
+            if (!path.length || path[path.length-1].x != position.x || path[path.length-1].y != position.y) {
+                delete creep.memory.movePath;
+            }
+        }
+        if (!creep.memory.movePath) {
+            var path = room.findPath(creep.pos, position, {ignoreCreeps: true});
+            // console.log("Calculated path: " + JSON.stringify(path));
+            creep.memory.movePath = Room.serializePath(path);
+        }
+        path = Room.deserializePath(creep.memory.movePath);
+        if (creep.pos.isEqualTo(path[0].x, path[0].y)) {
+            // have moved in the last tick, update path
+            path.shift();
+            creep.memory.movePath = Room.serializePath(path);
+        }
+        creepCommons.visualizePath(room, path);
+        var nextPosition = room.getPositionAt(path[0].x, path[0].y);
+        var otherCreeps = room.lookForAt(LOOK_CREEPS, nextPosition);
+        if (!otherCreeps.length) {
+            var err = creep.move(path[0].direction);
+            // console.log(creep.name + ", going " + path[0].direction + " got: " + err);
+            return 1;
+        }
+        var otherCreep = otherCreeps[0];
+        if (!otherCreep.memory.movePath) {
+            // the other creep is not moving
+            if (path.length > 1) {
+                // going further, so find a way around this obstacle
+                var deviation = room.findPath(creep.pos, room.getPositionAt(path[1].x, path[1].y));
+                path.shift(); // position of other creep
+                path.shift(); // position just behind other creep
+                path = deviation.concat(path);
+                // console.log("Path with avoidance of sitting creep: " + JSON.stringify(path));
+                creep.memory.movePath = Room.serializePath(path);
+                return creepCommons.moveTo(creep, position);
+            }
+            // it is blocking my target, no other option than to wait for it to move
+            return 2;
+        }
+        var otherCreepsPath = Room.deserializePath(otherCreep.memory.movePath);
+        if (otherCreep.pos.isEqualTo(otherCreepsPath[0].x, otherCreepsPath[0].y)) {
+            otherCreepsPath.shift();
+        }
+        if (creep.pos.isEqualTo(otherCreepsPath[0].x, otherCreepsPath[0].y)) {
+            // the other creep intends to move to my position, so we can switch positions
+            creep.move(path[0].direction);
+            return 1;
+        }
+        // keep distance to the other creep
+        return 2;
+    },
     getWalkableTerrain: function(pos) {
         var room = Game.rooms[pos.roomName];
         var terrain = room.getTerrain();
@@ -160,7 +229,9 @@ var creepCommons = {
                 delete creep.memory.sourceId;
             } else {
                 if (creep.harvest(source) == ERR_NOT_IN_RANGE) {
-                    creep.moveTo(source, {visualizePathStyle: {stroke: '#ffaa00'}});
+                    creepCommons.moveTo(creep, source.pos);
+                } else {
+                    delete creep.memory.movePath;
                 }
                 return;
             }
