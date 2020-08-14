@@ -24,12 +24,24 @@ var creepCommons = {
     },
 
     unwalkable: function(o) {
-        return o.type == LOOK_STRUCTURES && o.structure.structureType == STRUCTURE_SPAWN ||
-            o.type == LOOK_STRUCTURES && o.structure.structureType == STRUCTURE_EXTENSION ||
-            o.type == LOOK_STRUCTURES && o.structure.structureType == STRUCTURE_STORAGE ||
-            o.type == LOOK_STRUCTURES && o.structure.structureType == STRUCTURE_WALL ||
-            o.type == LOOK_STRUCTURES && o.structure.structureType == STRUCTURE_TOWER ||
-            o.type == LOOK_CREEPS;
+        if (o.type == LOOK_CREEPS) {
+            return true;
+        }
+        if (o.type == LOOK_STRUCTURES) {
+            return o.structure.structureType == STRUCTURE_SPAWN ||
+                o.structure.structureType == STRUCTURE_EXTENSION ||
+                o.structure.structureType == STRUCTURE_STORAGE ||
+                o.structure.structureType == STRUCTURE_WALL ||
+                o.structure.structureType == STRUCTURE_TOWER;
+        }
+        if (o.type == LOOK_CONSTRUCTION_SITES) {
+            return o.constructionSite.structureType == STRUCTURE_SPAWN ||
+                o.constructionSite.structureType == STRUCTURE_EXTENSION ||
+                o.constructionSite.structureType == STRUCTURE_STORAGE ||
+                o.constructionSite.structureType == STRUCTURE_WALL ||
+                o.constructionSite.structureType == STRUCTURE_TOWER;
+        }
+        return false;
     },
 
     noParking: function(room, sources, pos) {

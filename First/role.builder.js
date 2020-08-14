@@ -66,6 +66,7 @@ var roleBuilder = {
         				} else {
             			    var err = creep.moveTo(place.x, place.y, {visualizePathStyle: {stroke: '#ffffff'}});
             			    if (err == OK || err == ERR_TIRED || err == ERR_NO_PATH) {
+            			        // console.log("movoto " + JSON.stringify(place) + " ok");
                 				return;
             			    }
             			    console.log("Failed moveTo(" + JSON.stringify(place) + "), err: " + err);
