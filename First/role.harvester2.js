@@ -1,3 +1,5 @@
+var commons = require('creep.commons');
+
 var roleHarvester2 = {
     info: {
         roleName: 'harvester2',

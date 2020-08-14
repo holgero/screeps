@@ -59,6 +59,11 @@ var creepCommons = {
         var otherCreepsPath = Room.deserializePath(otherCreep.memory.movePath);
         if (otherCreep.pos.isEqualTo(otherCreepsPath[0].x, otherCreepsPath[0].y)) {
             otherCreepsPath.shift();
+            if (!otherCreepsPath.length) {
+                // the other creep is at its destination, we wait a tick and then continue above
+                delete otherCreep.memory.movePath;
+                return 2;
+            }
         }
         if (creep.pos.isEqualTo(otherCreepsPath[0].x, otherCreepsPath[0].y)) {
             // the other creep intends to move to my position, so we can switch positions
