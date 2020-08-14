@@ -66,9 +66,10 @@ var roleLorry = {
 	            const target = Game.getObjectById(creep.memory.feedTarget);
 	            var err = creep.transfer(target, RESOURCE_ENERGY);
                 if (err == ERR_NOT_IN_RANGE) {
-                    creep.moveTo(target, {visualizePathStyle: {stroke: '#ffffff'}});
+                    commons.moveTo(creep, target.pos);
                 } else if (err == OK || err == ERR_FULL) {
                     delete creep.memory.feedTarget;
+                    delete creep.memory.movePath;
                 }
             }
         } else {

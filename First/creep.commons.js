@@ -51,7 +51,7 @@ var creepCommons = {
                 path = deviation.concat(path);
                 // console.log("Path with avoidance of sitting creep: " + JSON.stringify(path));
                 creep.memory.movePath = Room.serializePath(path);
-                return creepCommons.moveTo(creep, position);
+                return 2;
             }
             // it is blocking my target, no other option than to wait for it to move
             return 2;
@@ -217,9 +217,11 @@ var creepCommons = {
             var err = creep.pickup(dropped);
             if (err == ERR_NOT_IN_RANGE) {
                 if (creep.pos.getRangeTo(dropped) < dropped.amount) {
-                    creep.moveTo(dropped, {visualizePathStyle: {stroke: '#ffaa00'}});
+                    creepCommons.moveTo(creep, dropped.pos);
                     return;
                 }
+            } else {
+                delete creep.memory.movePath;
             }
         }
         
@@ -248,16 +250,19 @@ var creepCommons = {
                 delete creep.memory.containerId;
             } else {
                 var err = creep.withdraw(container, RESOURCE_ENERGY);
+                if (err == ERR_NOT_IN_RANGE) {
+                    creepCommons.moveTo(creep, container.pos);
+                    return;
+                } 
+                delete creep.memory.movePath;
                 if (err == OK) {
                     return;
                 }
-                if (err == ERR_NOT_IN_RANGE) {
-                    creep.moveTo(container, {visualizePathStyle: {stroke: '#ffaa00'}});
-                    return;
-                } else if (err == ERR_NOT_ENOUGH_RESOURCES) {
+                if (err == ERR_NOT_ENOUGH_RESOURCES) {
                     delete creep.memory.containerId;
                 } else {
                     console.log('Get energy from container failed with: ' + err);
+                    delete creep.memory.containerId;
                 }
             }
         }

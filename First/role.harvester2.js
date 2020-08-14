@@ -22,7 +22,9 @@ var roleHarvester2 = {
                 creep.say('renewing');
                 var spawn = room.find(FIND_MY_STRUCTURES, { filter: { structureType: STRUCTURE_SPAWN }})[0];
                 if (!creep.pos.isNearTo(spawn.pos)) {
-                    creep.moveTo(spawn.pos.x, spawn.pos.y, {visualizePathStyle: {stroke: '#ffaa00'}});
+                    commons.moveTo(creep, spawn.pos);
+                } else {
+                    delete creep.memory.movePath;
                 }
                 return;
             }
@@ -33,14 +35,16 @@ var roleHarvester2 = {
             if (creep.pos.x == pos.x && creep.pos.y == pos.y) {
                 creep.say('arrived');
                 delete creep.memory.placeToBe;
+                delete creep.memory.movePath;
             } else if (room.lookForAt(LOOK_CREEPS, pos.x, pos.y).length) {
                 // console.log('occupied storage');
                 // occupied by someone else
                 delete creep.memory.placeToBe;
+                delete creep.memory.movePath;
                 delete creep.memory.sourceId;
             } else {
                 // console.log('continue going');
-                creep.moveTo(creep.memory.placeToBe.x, creep.memory.placeToBe.y, {visualizePathStyle: {stroke: '#ffaa00'}});
+                commons.moveTo(creep, room.getPositionAt(creep.memory.placeToBe.x, creep.memory.placeToBe.y));
                 return;
             }
         }
@@ -77,7 +81,7 @@ var roleHarvester2 = {
                     if (room.lookForAt(LOOK_CREEPS, structure.x, structure.y).length == 0) {
                         creep.memory.placeToBe = structure.structure.pos;
                         creep.memory.sourceId = source.id;
-                        creep.moveTo(creep.memory.placeToBe, {visualizePathStyle: {stroke: '#ffaa00'}});
+                        commons.moveTo(creep, structure.structure.pos);
                         return;
                     } else if (creep.pos.isEqualTo(structure.structure.pos)) {
                         creep.memory.sourceId = source.id;

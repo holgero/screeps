@@ -44,12 +44,16 @@ var roleHarvester = {
             targets.sort((a,b) => ordinalOf(a) - ordinalOf(b));
             if (targets.length > 0) {
                 if (creep.transfer(targets[0], RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
-                    creep.moveTo(targets[0], {visualizePathStyle: {stroke: '#ffffff'}});
+                    commons.moveTo(creep, targets[0].pos);
+                } else {
+                    delete creep.memory.movePath;
                 }
             } else {
                 var spawn = Game.spawns['Spawn1'];
                 if (creep.transfer(spawn, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
-                    creep.moveTo(spawn, {visualizePathStyle: {stroke: '#ffffff'}});
+                    commons.moveTo(creep, spawn.pos);
+                } else {
+                    delete creep.memory.movePath;
                 }
             }
         } else {

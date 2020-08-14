@@ -31,10 +31,14 @@ var roleUpgrader = {
                     if (commons.noParking(room, sources, creep.pos)) {
                         var place = commons.findSuitablePlace(creep, controller, sources);
                         if (place != null) {
-                            creep.moveTo(place, { visualizePathStyle: {stroke: '#ffffff'}, ignoreRoads: true });
+                            if (commons.moveTo(creep, place) != 0) {
+                                return;
+                            }
+                            console.log("Strange, cannot park here, but findSuitablePlace points to here???");
                             return;
                         }
                     } else {
+                        delete creep.memory.movePath;
                         var err = creep.upgradeController(controller);
                         if (err != OK) {
                            console.log('Upgrade controller failed: ' + err);
@@ -44,12 +48,12 @@ var roleUpgrader = {
                 } else {
                     var place = commons.findSuitablePlace(creep, controller, sources);
                     if (place != null) {
-                        creep.moveTo(place, { visualizePathStyle: {stroke: '#ffffff'}, ignoreRoads: true });
+                        commons.moveTo(creep, place);
                         return;
                     }
                 }
             }
-            creep.moveTo(controller, {visualizePathStyle: {stroke: '#ffffff'}});
+            commons.moveTo(creep, controller.pos);
         } else {
             commons.fetchEnergy(creep);
         }

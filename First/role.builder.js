@@ -37,7 +37,9 @@ var roleBuilder = {
         			    var spawn = Game.spawns['Spawn1'];
         			    if (creep.transfer(spawn, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
             				creep.say('park');
-            				creep.moveTo(spawn, {visualizePathStyle: {stroke: '#ffffff'}});
+            				commons.moveTo(creep, spawn.pos);
+        			    } else {
+        			        delete creep.memory.movePath;
         			    }
         			    return;
     		        }
@@ -54,6 +56,7 @@ var roleBuilder = {
     		    }
     		    if (place && target) {
     		        if (creep.pos.x == place.x && creep.pos.y == place.y) {
+    		            delete creep.memory.movePath;
                         var err = creep.build(target);
                         if (err != OK) {
                            console.log('Build failed: ' + err);
@@ -63,14 +66,10 @@ var roleBuilder = {
         				if (creep.pos.isNearTo(place.x, place.y) && room.lookForAt(LOOK_CREEPS, place.x, place.y).length) {
         				    console.log('Place to be (' + JSON.stringify(place) + ') is blocked!');
         				    delete creep.memory.placeToBe;
+        		            delete creep.memory.movePath;
         				} else {
-            			    var err = creep.moveTo(place.x, place.y, {visualizePathStyle: {stroke: '#ffffff'}});
-            			    if (err == OK || err == ERR_TIRED || err == ERR_NO_PATH) {
-            			        // console.log("movoto " + JSON.stringify(place) + " ok");
-                				return;
-            			    }
-            			    console.log("Failed moveTo(" + JSON.stringify(place) + "), err: " + err);
-            			    delete creep.memory.placeToBe;
+            			    commons.moveTo(creep, room.getPositionAt(place.x, place.y));
+            			    return;
         				}
     		        }
     		    }
