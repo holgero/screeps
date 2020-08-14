@@ -47,7 +47,7 @@ var roleRoom = {
         }
         var containers = room.find(FIND_STRUCTURES, { filter: {structureType: STRUCTURE_CONTAINER}});
         needed.harvester2 = containers.length;
-        needed.lorry = Math.ceil(1.5 * containers.length);
+        needed.lorry = Math.ceil(1.1 * containers.length);
         needed.harvester = Math.max(1, needed.harvester - needed.lorry);
         var construction_sites = room.find(FIND_MY_CONSTRUCTION_SITES);
         if (construction_sites.length == 0) {
