@@ -3,7 +3,8 @@ var strategySpawn = {
         if (spawn.spawning) {
             return 0;
         }
-        var creeps = _.filter(Game.creeps, (creep) => creep.memory.role == info.roleName);
+        var creeps = _.filter(Game.creeps,
+                (creep) => creep.memory.role == info.roleName && creep.room == spawn.room);
         if (creeps.length >= desiredCreeps) {
             return 1;
         }
