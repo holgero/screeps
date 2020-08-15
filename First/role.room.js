@@ -6,6 +6,7 @@ var roleLorry = require('role.lorry');
 var roleHarvester2 = require('role.harvester2');
 var roleUpgrader = require('role.upgrader');
 var roleBuilder = require('role.builder');
+var roleExplorer = require('role.explorer');
 
 var roleRoom = {
     calculateNeededCreeps: function(room, controller) {
@@ -15,6 +16,7 @@ var roleRoom = {
             upgrader: 0,
             builder: 0,
             lorry: 0,
+            explorer: 0,
         };
         switch (controller.level) {
             case 0:
@@ -37,12 +39,14 @@ var roleRoom = {
                 needed.harvester = 3;
                 needed.upgrader = 7;
                 needed.builder = 3;
+                needed.explorer = 1;
                 break;
             case 5:
             default:
                 needed.harvester = 3;
                 needed.upgrader = 8;
                 needed.builder = 3;
+                needed.explorer = 1;
                 break;
         }
         var containers = room.find(FIND_STRUCTURES, { filter: {structureType: STRUCTURE_CONTAINER}});
@@ -81,7 +85,7 @@ var roleRoom = {
             return;
         }
         const spawn = spawns[0];
-        
+
         if (room.memory.needed === undefined || room.memory.existing === undefined || Game.time % 100 == 0) {
             roleRoom.calculateNeededCreeps(room, controller);
             roleRoom.calculateExistingCreeps(room);
@@ -90,6 +94,7 @@ var roleRoom = {
             if (strategySpawn.createMissing(roleHarvester.info, room.memory.needed.harvester) &&
             strategySpawn.createMissing(roleHarvester2.info, room.memory.needed.harvester2) &&
             strategySpawn.createMissing(roleLorry.info, room.memory.needed.lorry) &&
+            strategySpawn.createMissing(roleExplorer.info, room.memory.needed.explorer) &&
             strategySpawn.createMissing(roleUpgrader.info, room.memory.needed.upgrader) &&
             strategySpawn.createMissing(roleBuilder.info, room.memory.needed.builder)) {
                 strategyDevelop.developSwampRoads(spawn);

@@ -5,6 +5,7 @@ var roleHarvester2 = require('role.harvester2');
 var roleUpgrader = require('role.upgrader');
 var roleBuilder = require('role.builder');
 var roleLorry = require('role.lorry');
+var roleExplorer = require('role.explorer');
 
 module.exports.loop = function () {
     for (var name in Memory.creeps) {
@@ -34,7 +35,7 @@ module.exports.loop = function () {
         if (creep.spawning) {
             continue;
         }
-        for (var role of [roleHarvester, roleHarvester2, roleUpgrader, roleBuilder, roleLorry]) {
+        for (var role of [roleHarvester, roleHarvester2, roleUpgrader, roleBuilder, roleLorry, roleExplorer]) {
             if (creep.memory.role == role.info.roleName) {
                 role.run(creep);
             }

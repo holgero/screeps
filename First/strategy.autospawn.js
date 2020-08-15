@@ -8,28 +8,30 @@ var strategySpawn = {
         if (creeps.length >= desiredCreeps) {
             return 1;
         }
-        var creepAdditions = 0;
-        if (spawn.room.controller.level >= 2) {
-            creepAdditions++;
-        }
-        creepAdditions += Math.ceil(spawn.room.find(FIND_MY_STRUCTURES, {filter: { structureType: STRUCTURE_EXTENSION }}).length/2);
         var body = info.minimalBody.slice();
-        while (creepAdditions > 0) {
-            if (creepAdditions > 0 && info.increaseMove) {
-                body.push(MOVE);
-                creepAdditions--;
+        if (info.increaseMove || info.increaseCarry || info.increaseMove) {
+            var creepAdditions = 0;
+            if (spawn.room.controller.level >= 2) {
+                creepAdditions++;
             }
-            if (creepAdditions > 0 && info.increaseCarry) {
-                body.push(CARRY);
-                creepAdditions--;
-            }
-            if (creepAdditions > 0 && info.increaseMove && info.increaseWork && info.increaseCarry) {
-                body.push(MOVE);
-                creepAdditions--;
-            }
-            if (creepAdditions > 0 && info.increaseWork) {
-                body.push(WORK);
-                creepAdditions-=2;
+            creepAdditions += Math.ceil(spawn.room.find(FIND_MY_STRUCTURES, {filter: { structureType: STRUCTURE_EXTENSION }}).length/2);
+            while (creepAdditions > 0) {
+                if (creepAdditions > 0 && info.increaseMove) {
+                    body.push(MOVE);
+                    creepAdditions--;
+                }
+                if (creepAdditions > 0 && info.increaseCarry) {
+                    body.push(CARRY);
+                    creepAdditions--;
+                }
+                if (creepAdditions > 0 && info.increaseMove && info.increaseWork && info.increaseCarry) {
+                    body.push(MOVE);
+                    creepAdditions--;
+                }
+                if (creepAdditions > 0 && info.increaseWork) {
+                    body.push(WORK);
+                    creepAdditions-=2;
+                }
             }
         }
         var newName = _.capitalize(info.roleName) + '-' + Game.time;
