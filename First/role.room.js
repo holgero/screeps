@@ -77,7 +77,7 @@ var roleRoom = {
     },
     run: function(room, controller) {
         const spawns = room.find(FIND_MY_STRUCTURES, { filter: { structureType: STRUCTURE_SPAWN } });
-        if (!spawns) {
+        if (!spawns || !spawns.length) {
             return;
         }
         const spawn = spawns[0];
