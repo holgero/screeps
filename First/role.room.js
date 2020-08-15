@@ -39,14 +39,12 @@ var roleRoom = {
                 needed.harvester = 3;
                 needed.upgrader = 7;
                 needed.builder = 3;
-                needed.explorer = 1;
                 break;
             case 5:
             default:
                 needed.harvester = 3;
                 needed.upgrader = 8;
                 needed.builder = 3;
-                needed.explorer = 1;
                 break;
         }
         var containers = room.find(FIND_STRUCTURES, { filter: {structureType: STRUCTURE_CONTAINER}});
