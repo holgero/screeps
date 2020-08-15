@@ -12,7 +12,13 @@ var roleBuilder = {
     /** @param {Creep} creep **/
     run: function(creep) {
         commons.releaseEnergySources(creep);
-
+        if (creep.memory.developmentaid) {
+            var position = new RoomPosition(creep.memory.developmentaid.x, creep.memory.developmentaid.y, creep.memory.developmentaid.roomName);
+            if (0 == commons.moveTo(creep, position)) {
+                delete creep.memory.developmentaid;
+            }
+            return;
+        }
 	    if (creep.memory.building && creep.store[RESOURCE_ENERGY] == 0) {
             creep.memory.building = false;
 	    delete creep.memory.placeToBe;
