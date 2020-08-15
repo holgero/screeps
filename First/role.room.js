@@ -95,20 +95,20 @@ var roleRoom = {
             strategySpawn.createMissing(spawn, roleExplorer.info, room.memory.needed.explorer) &&
             strategySpawn.createMissing(spawn, roleUpgrader.info, room.memory.needed.upgrader) &&
             strategySpawn.createMissing(spawn, roleBuilder.info, room.memory.needed.builder)) {
-                strategyDevelop.developSwampRoads(spawn);
-                strategyDevelop.developContainers(spawn);
-                if (strategyDevelop.developRoom(2, STRUCTURE_EXTENSION, room.getPositionAt(spawn.pos.x - 2, spawn.pos.y + 2), 5)) {
-                    strategyDevelop.developRoads(spawn);
+                strategyDevelop.developSwampRoads(room);
+                strategyDevelop.developContainers(room);
+                if (strategyDevelop.developRoom(room, 2, STRUCTURE_EXTENSION, room.getPositionAt(spawn.pos.x - 2, spawn.pos.y + 2), 5)) {
+                    strategyDevelop.developRoads(room);
                 }
-                if (strategyDevelop.developRoom(3, STRUCTURE_TOWER, room.getPositionAt(spawn.pos.x, spawn.pos.y + 4), 1)) {
-                    strategyDevelop.developRoom(3, STRUCTURE_EXTENSION, room.getPositionAt(spawn.pos.x-2, spawn.pos.y + 3), 10);
+                if (strategyDevelop.developRoom(room, 3, STRUCTURE_TOWER, room.getPositionAt(spawn.pos.x, spawn.pos.y + 4), 1)) {
+                    strategyDevelop.developRoom(room, 3, STRUCTURE_EXTENSION, room.getPositionAt(spawn.pos.x-2, spawn.pos.y + 3), 10);
                 }
-                if (strategyDevelop.developRoom(4, STRUCTURE_STORAGE, room.getPositionAt(spawn.pos.x, spawn.pos.y + 6), 1)) {
-                    if (strategyDevelop.developRoom(4, STRUCTURE_EXTENSION, room.getPositionAt(spawn.pos.x-2, spawn.pos.y + 7), 15)) {
-                        strategyDevelop.developRoom(4, STRUCTURE_EXTENSION, room.getPositionAt(spawn.pos.x-2, spawn.pos.y + 8), 20);
+                if (strategyDevelop.developRoom(room, 4, STRUCTURE_STORAGE, room.getPositionAt(spawn.pos.x, spawn.pos.y + 6), 1)) {
+                    if (strategyDevelop.developRoom(room, 4, STRUCTURE_EXTENSION, room.getPositionAt(spawn.pos.x-2, spawn.pos.y + 7), 15)) {
+                        strategyDevelop.developRoom(room, 4, STRUCTURE_EXTENSION, room.getPositionAt(spawn.pos.x-2, spawn.pos.y + 8), 20);
                     }
                 }
-                if (strategyDevelop.developRoom(5, STRUCTURE_TOWER, room.getPositionAt(spawn.pos.x - 4, spawn.pos.y), 2)) {
+                if (strategyDevelop.developRoom(room, 5, STRUCTURE_TOWER, room.getPositionAt(spawn.pos.x - 4, spawn.pos.y), 2)) {
                     // something else on level 5?
                 }
             }

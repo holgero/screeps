@@ -1,9 +1,7 @@
 var commons = require('creep.commons');
 
 var strategyDevelopment = {
-    developRoom: function(level, type, position, count) {
-        var spawn = Game.spawns['Spawn1'];
-        var room = spawn.room;
+    developRoom: function(room, level, type, position, count) {
         if (room.controller.level < level) {
             return 0;
         }
@@ -22,9 +20,16 @@ var strategyDevelopment = {
         }
         return 1;
     },
-    developRoads: function(spawn) {
-        var room = spawn.room;
+    developRoads: function(room) {
         if (!room.memory.roadsCreated) {
+		    var spawns = room.find(FIND_MY_SPAWNS);
+		    var spawn;
+		    if (spawns && spawns.length) {
+		        spawn = spawns[0];
+		    } else {
+		        console.log('No spawn in this room, cannot develop automatic roads');
+		        return;
+		    }
             var from = spawn.pos;
             var targets = room.find(FIND_SOURCES);
             targets.push(room.controller);
@@ -43,9 +48,16 @@ var strategyDevelopment = {
             });
         }
     },
-    developSwampRoads: function(spawn) {
-        var room = spawn.room;
+    developSwampRoads: function(room) {
         if (!room.memory.swampRoadsCreated) {
+		    var spawns = room.find(FIND_MY_SPAWNS);
+		    var spawn;
+		    if (spawns && spawns.length) {
+		        spawn = spawns[0];
+		    } else {
+		        console.log('No spawn in this room, cannot develop automatic roads');
+		        return;
+		    }
             var from = spawn.pos;
             var targets = room.find(FIND_SOURCES);
             var terrain = room.getTerrain();
@@ -67,8 +79,7 @@ var strategyDevelopment = {
             });
         }
     },
-    developContainers: function(spawn) {
-        var room = spawn.room;
+    developContainers: function(room) {
         if (!room.memory.containersCreated) {
             var sources = room.find(FIND_SOURCES);
             for (var i=0;i<9;i++) {
