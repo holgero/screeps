@@ -89,12 +89,12 @@ var roleRoom = {
             roleRoom.calculateExistingCreeps(room);
         }
         if (Game.time % 10 == 0) {
-            if (strategySpawn.createMissing(roleHarvester.info, room.memory.needed.harvester) &&
-            strategySpawn.createMissing(roleHarvester2.info, room.memory.needed.harvester2) &&
-            strategySpawn.createMissing(roleLorry.info, room.memory.needed.lorry) &&
-            strategySpawn.createMissing(roleExplorer.info, room.memory.needed.explorer) &&
-            strategySpawn.createMissing(roleUpgrader.info, room.memory.needed.upgrader) &&
-            strategySpawn.createMissing(roleBuilder.info, room.memory.needed.builder)) {
+            if (strategySpawn.createMissing(spawn, roleHarvester.info, room.memory.needed.harvester) &&
+            strategySpawn.createMissing(spawn, roleHarvester2.info, room.memory.needed.harvester2) &&
+            strategySpawn.createMissing(spawn, roleLorry.info, room.memory.needed.lorry) &&
+            strategySpawn.createMissing(spawn, roleExplorer.info, room.memory.needed.explorer) &&
+            strategySpawn.createMissing(spawn, roleUpgrader.info, room.memory.needed.upgrader) &&
+            strategySpawn.createMissing(spawn, roleBuilder.info, room.memory.needed.builder)) {
                 strategyDevelop.developSwampRoads(spawn);
                 strategyDevelop.developContainers(spawn);
                 if (strategyDevelop.developRoom(2, STRUCTURE_EXTENSION, room.getPositionAt(spawn.pos.x - 2, spawn.pos.y + 2), 5)) {

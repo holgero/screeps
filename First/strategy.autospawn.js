@@ -1,6 +1,5 @@
 var strategySpawn = {
-    createMissing: function(info, desiredCreeps) {
-        var spawn = Game.spawns['Spawn1'];
+    createMissing: function(spawn, info, desiredCreeps) {
         if (spawn.spawning) {
             return 0;
         }

@@ -40,7 +40,13 @@ var roleBuilder = {
         			    creep.memory.targetId = target.id;
         			    delete creep.memory.placeToBe;
     		        } else {
-        			    var spawn = Game.spawns['Spawn1'];
+        			    var spawns = room.find(FIND_MY_SPAWNS);
+        			    var spawn;
+        			    if (spawns && spawns.length) {
+        			        spawn = spawns[0];
+        			    } else {
+        			        spawn = Game.spawns["Spawn1"];
+        			    }
         			    if (creep.transfer(spawn, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
             				creep.say('park');
             				commons.moveTo(creep, spawn.pos);
