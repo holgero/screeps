@@ -30,7 +30,7 @@ var roleLorry = {
             switch (target.structureType) {
                 case STRUCTURE_SPAWN: return 1;
                 case STRUCTURE_TOWER:
-		    if (target.store.getFreeCapacity() > target.store.getCapacity()/2) {
+		    if (target.store.getUsedCapacity(RESOURCE_ENERGY) < target.store.getCapacity(RESOURCE_ENERGY)/2) {
 			return 2;
 		    } else {
 			return 4;
@@ -40,7 +40,11 @@ var roleLorry = {
                 default: return 6;
             }
         };
+        //targets.forEach(function(t) {
+        //   console.log(JSON.stringify(t) + " has ordinal " + ordinalOf(t)); 
+        //});
         targets.sort((a,b) => ordinalOf(a) - ordinalOf(b));
+        //console.log(creep.name + ": will feed " + JSON.stringify(targets[0]));
         creep.memory.feedTarget = targets[0].id;
     },
 
