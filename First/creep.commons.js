@@ -156,8 +156,7 @@ var creepCommons = {
         var right = Math.min(48, target.pos.x+distance);
         var areaStuff = room.lookAtArea(top, left, bottom, right);
         // console.log('All around target: ' + JSON.stringify(areaStuff));
-        var bestDistance = 99;
-        var place = null;
+        var candidates = [];
         for (var y=top; y<=bottom; y++) {
             for (var x=left; x<=right; x++) {
                 if (target.pos.isEqualTo(x, y)) {
@@ -181,17 +180,17 @@ var creepCommons = {
                         continue;
                     }
                 }
-                var distance = creep.pos.getRangeTo(x, y);
-                if (distance < bestDistance) {
-                    bestDistance = distance;
-                    place = creep.room.getPositionAt(x,y);
-                }
+                candidates.push(room.getPositionAt(x,y));
             }
         }
-        if (!place) {
+        if (!candidates.length) {
             // console.log('Did not find a place near: ' + JSON.stringify(target.pos));
+            return null;
         }
-        return place;
+        if (candidates.length==1) {
+            return candidates[0];
+        }
+        return creep.pos.findClosestByPath(candidates);
     },
 
     releaseEnergySources: function(creep) {
