@@ -44,6 +44,10 @@ var creepCommons = {
             return 1;
         }
         var otherCreep = otherCreeps[0];
+        if (!otherCreep.my) {
+            console.log('Hostile Creep!');
+            return;
+        }
         if (!otherCreep.memory.movePath) {
             // the other creep is not moving
             if (path.length > 1) {

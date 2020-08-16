@@ -35,7 +35,7 @@ module.exports.loop = function () {
         if (creep.spawning) {
             continue;
         }
-        for (var role of [roleHarvester, roleHarvester2, roleUpgrader, roleBuilder, roleLorry, roleExplorer]) {
+        for (var role of [roleHarvester, roleHarvester2, roleUpgrader, roleBuilder, roleLorry, roleExplorer, roleSoldier]) {
             if (creep.memory.role == role.info.roleName) {
                 role.run(creep);
             }

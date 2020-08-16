@@ -7,6 +7,7 @@ var roleHarvester2 = require('role.harvester2');
 var roleUpgrader = require('role.upgrader');
 var roleBuilder = require('role.builder');
 var roleExplorer = require('role.explorer');
+var roleSoldier = require('role.soldier');
 
 var roleRoom = {
     calculateNeededCreeps: function(room, controller) {
@@ -85,7 +86,11 @@ var roleRoom = {
             return;
         }
         const spawn = spawns[0];
-
+        if (room.find(FIND_HOSTILE_CREEPS).length > 0) {
+            strategySpawn.createMissing(spawn, roleSoldier.info, 5);
+            roleSpawn.run(spawn);
+            return;
+        }
         if (room.memory.needed === undefined || room.memory.existing === undefined || Game.time % 100 == 0) {
             roleRoom.calculateNeededCreeps(room, controller);
             roleRoom.calculateExistingCreeps(room);
