@@ -150,10 +150,10 @@ var creepCommons = {
 
     findSuitablePlace: function(creep, target, sources, distance=3) {
         var room = creep.room;
-        var top = Math.max(0, target.pos.y-distance);
-        var left = Math.max(0, target.pos.x-distance);
-        var bottom = Math.min(49, target.pos.y+distance);
-        var right = Math.min(49, target.pos.x+distance);
+        var top = Math.max(1, target.pos.y-distance);
+        var left = Math.max(1, target.pos.x-distance);
+        var bottom = Math.min(48, target.pos.y+distance);
+        var right = Math.min(48, target.pos.x+distance);
         var areaStuff = room.lookAtArea(top, left, bottom, right);
         // console.log('All around target: ' + JSON.stringify(areaStuff));
         var bestDistance = 99;
