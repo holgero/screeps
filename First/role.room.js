@@ -18,12 +18,13 @@ var roleRoom = {
             builder: 0,
             lorry: 0,
             explorer: 0,
+            soldier: 0,
         };
         switch (controller.level) {
             case 0:
             case 1:
                 needed.harvester = 1;
-                needed.upgrader = 4;
+                needed.upgrader = 3;
                 needed.builder = 1;
                 break;
             case 2:
@@ -50,13 +51,22 @@ var roleRoom = {
         }
         var containers = room.find(FIND_STRUCTURES, { filter: {structureType: STRUCTURE_CONTAINER}});
         needed.harvester2 = containers.length;
-        needed.lorry = Math.ceil(1.1 * containers.length);
-        needed.harvester = Math.max(1, needed.harvester - needed.lorry);
+        needed.lorry = containers.length;
+        needed.harvester = Math.max(0, needed.harvester - needed.lorry);
         var construction_sites = room.find(FIND_MY_CONSTRUCTION_SITES);
         if (construction_sites.length == 0) {
             needed.builder = 0;
         } else {
 	    needed.upgrader -= needed.builder;
+	    var containerEnergy = 0;
+	    var containerEnergyCapacity = 0;
+	    containers.forEach(function (c) {
+	       containerEnergy += c.store.getUsedCapacity(RESOURCE_ENERGY);
+	       containerEnergyCapacity += c.store.getCapacity(RESOURCE_ENERGY);
+	    });
+	    if (containerEnergy > containerEnergyCapacity/2) {
+	        needed.lorry ++;
+	    }
 	}
         room.memory.needed = needed;
     },
