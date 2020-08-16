@@ -43,8 +43,8 @@ var roleHarvester = {
             function ordinalOf(target) {
                 switch (target.structureType) {
                     case STRUCTURE_SPAWN: return 1;
-                    case STRUCTURE_EXTENSION: return 2;
-                    case STRUCTURE_TOWER: return 3;
+                    case STRUCTURE_TOWER: return 2;
+                    case STRUCTURE_EXTENSION: return 3;
                     case STRUCTURE_STORAGE: return 4;
                     default: return 5;
                 }
