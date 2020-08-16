@@ -57,12 +57,8 @@ var roleHarvester = {
                     delete creep.memory.movePath;
                 }
             } else {
-                var spawn = Game.spawns['Spawn1'];
-                if (creep.transfer(spawn, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
-                    commons.moveTo(creep, spawn.pos);
-                } else {
-                    delete creep.memory.movePath;
-                }
+                creep.say('park');
+                commons.gotoSpawn(creep, creep.room);
             }
         } else {
             commons.fetchEnergy(creep, true, false);

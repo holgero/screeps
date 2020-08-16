@@ -227,6 +227,21 @@ var creepCommons = {
             }
         });
     },
+    
+    gotoSpawn: function(creep, room) {
+        var spawns = room.find(FIND_MY_SPAWNS);
+        var spawn;
+        if (spawns && spawns.length) {
+            spawn = spawns[0];
+        } else {
+            spawn = Game.spawns["Spawn1"];
+        }
+        if (creepCommons.moveTo(creep, spawn.pos) == 0) {
+            delete creep.memory.movePath;
+            return 0;
+        }
+        return 1;
+    },
 
     /** @param {Creep} creep **/
     fetchEnergy: function(creep, harvesting=true, useStorage=true) {
