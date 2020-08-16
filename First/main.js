@@ -6,6 +6,7 @@ var roleUpgrader = require('role.upgrader');
 var roleBuilder = require('role.builder');
 var roleLorry = require('role.lorry');
 var roleExplorer = require('role.explorer');
+var roleSoldier = require('role.soldier');
 
 module.exports.loop = function () {
     for (var name in Memory.creeps) {
