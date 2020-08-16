@@ -22,7 +22,7 @@ var roleRoom = {
             case 0:
             case 1:
                 needed.harvester = 1;
-                needed.upgrader = 3;
+                needed.upgrader = 4;
                 needed.builder = 1;
                 break;
             case 2:
@@ -54,7 +54,9 @@ var roleRoom = {
         var construction_sites = room.find(FIND_MY_CONSTRUCTION_SITES);
         if (construction_sites.length == 0) {
             needed.builder = 0;
-        }
+        } else {
+	    needed.upgrader -= needed.builder;
+	}
         room.memory.needed = needed;
     },
     calculateExistingCreeps: function(room) {
