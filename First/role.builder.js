@@ -40,20 +40,9 @@ var roleBuilder = {
         			    creep.memory.targetId = target.id;
         			    delete creep.memory.placeToBe;
     		        } else {
-        			    var spawns = room.find(FIND_MY_SPAWNS);
-        			    var spawn;
-        			    if (spawns && spawns.length) {
-        			        spawn = spawns[0];
-        			    } else {
-        			        spawn = Game.spawns["Spawn1"];
-        			    }
-        			    if (creep.transfer(spawn, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
-            				creep.say('park');
-            				commons.moveTo(creep, spawn.pos);
-        			    } else {
-        			        delete creep.memory.movePath;
-        			    }
-        			    return;
+    		            creep.say('park');
+    		            commons.gotoSpawn(creep, room);
+    		            return;
     		        }
     		    }
     		    var place = creep.memory.placeToBe;
