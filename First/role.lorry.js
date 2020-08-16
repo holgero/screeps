@@ -80,14 +80,21 @@ var roleLorry = {
             for (var tombstone of creep.room.find(FIND_TOMBSTONES)) {
                 // console.log(JSON.stringify(tombstone));
                 // console.log(JSON.stringify(tombstone.store));
+                for (var res in tombstone.store) {
+                    console.log(creep.name + ", picking up resource: " + res);
+                    if (creep.withdraw(tombstone, res) == ERR_NOT_IN_RANGE) {
+                        creep.moveTo(tombstone);
+                        return;
+                    }
+                }
             }
             const targets = creep.room.find(FIND_DROPPED_RESOURCES);
             if (targets.length) {
                 console.log(JSON.stringify(targets[0]));
                 if (creep.pickup(targets[0]) == ERR_NOT_IN_RANGE) {
                     creep.moveTo(targets[0]);
+                    return;
                 }
-                return;
             }
             commons.fetchEnergy(creep, false, false);
         }
