@@ -236,6 +236,7 @@ var creepCommons = {
             spawn = Game.spawns["Spawn1"];
         }
         if (creepCommons.moveTo(creep, spawn.pos) == 0) {
+            creep.transfer(spawn, RESOURCE_ENERGY);
             delete creep.memory.movePath;
             return 0;
         }
