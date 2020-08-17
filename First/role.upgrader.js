@@ -40,7 +40,7 @@ var roleUpgrader = {
                     place = commons.findSuitablePlace(creep, controller, sources);
                     creep.memory.placeToBe = place;
                     if (!place) {
-                        console.log('failed to find a place near target ' + JSON.stringify(target));
+                        console.log('failed to find a place near target ' + JSON.stringify(controller));
                         return;
                     }
                 }
