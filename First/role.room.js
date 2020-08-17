@@ -30,23 +30,23 @@ var roleRoom = {
                 break;
             case 2:
                 needed.harvester = 2;
-                needed.upgrader = 5;
+                needed.upgrader = 4;
                 needed.builder = 3;
                 break;
             case 3:
                 needed.harvester = 3;
-                needed.upgrader = 6;
+                needed.upgrader = 5;
                 needed.builder = 3;
                 break;
             case 4:
                 needed.harvester = 3;
-                needed.upgrader = 7;
+                needed.upgrader = 6;
                 needed.builder = 3;
                 break;
             case 5:
             default:
                 needed.harvester = 3;
-                needed.upgrader = 8;
+                needed.upgrader = 7;
                 needed.builder = 3;
                 break;
         }
