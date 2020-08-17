@@ -22,6 +22,7 @@ var roleUpgrader = {
 
         if (creep.memory.upgrading && creep.store[RESOURCE_ENERGY] == 0) {
             creep.memory.upgrading = false;
+            delete creep.memory.placeToBe;
             creep.say('🔄 harvest');
 	    }
 	    if (!creep.memory.upgrading && creep.store.getFreeCapacity(RESOURCE_ENERGY) == 0) {
@@ -32,35 +33,38 @@ var roleUpgrader = {
 	    if (creep.memory.upgrading) {
 	        var room = creep.room;
 	        var controller = room.controller;
-            if (creep.pos.inRangeTo(controller.pos, 4)) {
-                var sources = room.find(FIND_SOURCES);
-                if (creep.pos.inRangeTo(controller.pos, 3)) {
-                    if (commons.noParking(room, sources, creep.pos)) {
-                        var place = commons.findSuitablePlace(creep, controller, sources);
-                        if (place != null) {
-                            if (commons.moveTo(creep, place) != 0) {
-                                return;
-                            }
-                            console.log("Strange, cannot park here, but findSuitablePlace points to here???");
-                            return;
-                        }
-                    } else {
+            for (var ii=0; ii<3; ii++) {
+                var place = creep.memory.placeToBe;
+                if (!place) {
+                    var sources = room.find(FIND_SOURCES);
+                    place = commons.findSuitablePlace(creep, controller, sources);
+                    creep.memory.placeToBe = place;
+                    if (!place) {
+                        console.log('failed to find a place near target ' + JSON.stringify(target));
+                        return;
+                    }
+                }
+                if (place) {
+                    if (creep.pos.x == place.x && creep.pos.y == place.y) {
                         delete creep.memory.movePath;
                         var err = creep.upgradeController(controller);
                         if (err != OK) {
                            console.log('Upgrade controller failed: ' + err);
                         }
                         return;
-                    }
-                } else {
-                    var place = commons.findSuitablePlace(creep, controller, sources);
-                    if (place != null) {
-                        commons.moveTo(creep, place);
-                        return;
+                    } else {
+                        if (creep.pos.isNearTo(place.x, place.y) && room.lookForAt(LOOK_CREEPS, place.x, place.y).length) {
+                            console.log('Place to be (' + JSON.stringify(place) + ') is blocked!');
+                            delete creep.memory.placeToBe;
+                            delete creep.memory.movePath;
+                        } else {
+                            commons.moveTo(creep, room.getPositionAt(place.x, place.y));
+                            return;
+                        }
                     }
                 }
             }
-            commons.moveTo(creep, controller.pos);
+            console.log('Loop failed');
         } else {
             commons.fetchEnergy(creep);
         }
