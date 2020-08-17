@@ -9,7 +9,7 @@ var strategySpawn = {
             return 1;
         }
         var body = info.minimalBody.slice();
-        if (info.increaseMove || info.increaseCarry || info.increaseMove) {
+        if (info.increaseMove || info.increaseCarry || info.increaseWork) {
             var creepAdditions = 0;
             if (spawn.room.controller.level >= 2) {
                 creepAdditions++;
