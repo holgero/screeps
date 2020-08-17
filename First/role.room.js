@@ -8,6 +8,7 @@ var roleUpgrader = require('role.upgrader');
 var roleBuilder = require('role.builder');
 var roleExplorer = require('role.explorer');
 var roleSoldier = require('role.soldier');
+var roleMedic = require('role.medic');
 
 var roleRoom = {
     calculateNeededCreeps: function(room, controller) {
@@ -97,7 +98,8 @@ var roleRoom = {
         }
         const spawn = spawns[0];
         if (room.find(FIND_HOSTILE_CREEPS).length > 0) {
-            strategySpawn.createMissing(spawn, roleSoldier.info, 5);
+            strategySpawn.createMissing(spawn, roleSoldier.info, 3);
+            strategySpawn.createMissing(spawn, roleMedic.info, 2);
             roleSpawn.run(spawn);
             return;
         }
