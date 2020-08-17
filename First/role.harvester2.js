@@ -62,15 +62,20 @@ var roleHarvester2 = {
                 }
 		var container = room.lookForAt(LOOK_STRUCTURES, creep.pos)[0];
 		// console.log(JSON.stringify('My container: ' + container));
-		if (container.store.getFreeCapacity(RESOURCE_ENERGY) > 20) {
-                    var err = creep.harvest(source);
-                    if (err == ERR_NOT_ENOUGH_RESOURCES) {
-                        // console.log('Source exhausted');
-                    } else if (err != OK) {
-                        console.log('Harvesting ' + JSON.stringify(source) + ' failed: ' + err);
+		if (!container) {
+		    console.log('Container is missing!');
+		    delete creep.memory.sourceId;
+		} else {
+		    if (container.store.getFreeCapacity(RESOURCE_ENERGY) > 20) {
+                        var err = creep.harvest(source);
+                        if (err == ERR_NOT_ENOUGH_RESOURCES) {
+                            // console.log('Source exhausted');
+                        } else if (err != OK) {
+                            console.log('Harvesting ' + JSON.stringify(source) + ' failed: ' + err);
+                        }
                     }
-                }
-                return;
+                    return;
+		}
             }
         }
         // console.log('find a place');
