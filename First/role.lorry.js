@@ -8,11 +8,22 @@ var roleLorry = {
         increaseMove: true,
         increaseWork: false,
     },
+    
+    transportedResources: function(creep) {
+        var result = [];
+        for (var res in creep.store) {
+            if (res != RESOURCE_ENERGY) {
+                result.push(res);
+            }
+        }
+        return result;
+    },
 
     /** @param {Creep} creep **/
     run: function(creep) {
         commons.releaseEnergySources(creep);
 
+        var toFeed = roleLorry.transportedResources(creep);
 	    if (creep.memory.feeding && creep.store[RESOURCE_ENERGY] == 0) {
             creep.memory.feeding = false;
             delete creep.memory.feedTarget;
@@ -25,11 +36,21 @@ var roleLorry = {
 
 	    if (creep.memory.feeding) {
 	        if (!creep.memory.feedTarget) {
-	            commons.findFeedTarget(creep);
+	            if (toFeed.length && creep.room.storage) {
+	                console.log(creep.name + " have resources to feed: " + JSON.stringify(toFeed));
+	                creep.memory.feedTarget = creep.room.storage.id;
+	            } else {
+	                commons.findFeedTarget(creep);
+	            }
 	        }
 	        if (creep.memory.feedTarget) {
 	            const target = Game.getObjectById(creep.memory.feedTarget);
-	            var err = creep.transfer(target, RESOURCE_ENERGY);
+	            var err;
+	            if (toFeed.length) {
+	                err = creep.transfer(target, toFeed[0]);
+	            } else {
+	                err = creep.transfer(target, RESOURCE_ENERGY);
+	            }
                 if (err == ERR_NOT_IN_RANGE) {
                     commons.moveTo(creep, target.pos);
                 } else if (err == OK || err == ERR_FULL) {
