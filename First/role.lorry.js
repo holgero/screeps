@@ -65,8 +65,10 @@ var roleLorry = {
                 for (var res in tombstone.store) {
                     console.log(creep.name + ", picking up resource: " + res);
                     if (creep.withdraw(tombstone, res) == ERR_NOT_IN_RANGE) {
-                        creep.moveTo(tombstone);
+                        commons.moveTo(creep, tombstone.pos);
                         return;
+                    } else {
+                        delete creep.memory.movePath;
                     }
                 }
             }
@@ -74,8 +76,10 @@ var roleLorry = {
             if (targets.length) {
                 console.log(JSON.stringify(targets[0]));
                 if (creep.pickup(targets[0]) == ERR_NOT_IN_RANGE) {
-                    creep.moveTo(targets[0]);
+                    commons.moveTo(creep, targets[0].pos);
                     return;
+                } else {
+                    delete creep.memory.movePath;
                 }
             }
             commons.fetchEnergy(creep, false, false);
