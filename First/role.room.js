@@ -58,17 +58,18 @@ var roleRoom = {
         if (construction_sites.length == 0) {
             needed.builder = 0;
         } else {
-	    needed.upgrader -= needed.builder;
+    	    needed.upgrader -= needed.builder;
+        }
 	    var containerEnergy = 0;
 	    var containerEnergyCapacity = 0;
 	    containers.forEach(function (c) {
 	       containerEnergy += c.store.getUsedCapacity(RESOURCE_ENERGY);
 	       containerEnergyCapacity += c.store.getCapacity(RESOURCE_ENERGY);
 	    });
+	    // console.log('ContainerEnergy: ' + containerEnergy + ', containerEnergyCapacity: ' + containerEnergyCapacity);
 	    if (containerEnergy > containerEnergyCapacity/2) {
 	        needed.lorry ++;
 	    }
-	}
         room.memory.needed = needed;
     },
     calculateExistingCreeps: function(room) {
@@ -103,7 +104,8 @@ var roleRoom = {
             roleSpawn.run(spawn);
             return;
         }
-        if (room.memory.needed === undefined || room.memory.existing === undefined || Game.time % 100 == 0) {
+        if (room.memory.needed === undefined || room.memory.existing === undefined || Game.time % 10 == 0) {
+            // console.log(room.name + ': Calculation time!');
             roleRoom.calculateNeededCreeps(room, controller);
             roleRoom.calculateExistingCreeps(room);
         }
