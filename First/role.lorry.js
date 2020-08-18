@@ -46,7 +46,7 @@ var roleLorry = {
 	        if (creep.memory.feedTarget) {
 	            const target = Game.getObjectById(creep.memory.feedTarget);
 	            var err;
-	            if (toFeed.length) {
+	            if (toFeed.length && creep.room.storage) {
 	                err = creep.transfer(target, toFeed[0]);
 	            } else {
 	                err = creep.transfer(target, RESOURCE_ENERGY);
