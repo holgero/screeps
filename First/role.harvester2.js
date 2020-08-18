@@ -7,6 +7,7 @@ var roleHarvester2 = {
         increaseCarry: false,
         increaseMove: false,
         increaseWork: true,
+        maximumSize: 10,
     },
 
     /** @param {Creep} creep **/

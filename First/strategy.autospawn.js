@@ -15,6 +15,9 @@ var strategySpawn = {
                 creepAdditions++;
             }
             creepAdditions += Math.ceil(spawn.room.find(FIND_MY_STRUCTURES, {filter: { structureType: STRUCTURE_EXTENSION }}).length/2);
+	    if (info.maximumSize) {
+		creepAdditions = Math.min(creepAdditions, info.maximumSize);
+	    }
             while (creepAdditions > 0) {
                 if (creepAdditions > 0 && info.increaseMove) {
                     body.push(MOVE);
