@@ -257,19 +257,28 @@ var creepCommons = {
             }
         }
         var containers = room.find(FIND_STRUCTURES, {filter: {structureType: STRUCTURE_CONTAINER}});
-        var maxEnergy=creep.store.getFreeCapacity(RESOURCE_ENERGY);
+        var neededEnergy=creep.store.getFreeCapacity(RESOURCE_ENERGY);
+        var candidates = [];
         containers.forEach(function(container) {
             var energy=container.store.getUsedCapacity(RESOURCE_ENERGY);
-            creeps.forEach(function(creep) {
-                if (creep.memory.containerId == container.id) {
-                    energy-=creep.store.getCapacity(RESOURCE_ENERGY);
+            creeps.forEach(function(other) {
+                if (other.id != creep.id && other.memory.containerId == container.id) {
+                    energy-=other.store.getFreeCapacity(RESOURCE_ENERGY);
                 }
             });
-            if (energy >= maxEnergy) {
-                maxEnergy = energy;
-                creep.memory.containerId = container.id;
+            if (energy >= neededEnergy) {
+                candidates.push(container);
             }
         });
+        if (candidates.length == 0) {
+            return;
+        }
+        if (candidates.length == 1) {
+            creep.memory.containerId = candidates[0].id;
+            return;
+        }
+        var container = creep.pos.findClosestByPath(candidates);
+        creep.memory.containerId = container.id;
     },
     
     gotoSpawn: function(creep, room) {
