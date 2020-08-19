@@ -56,7 +56,7 @@ var roleHarvester2 = {
             if (source == null) {
                 delete creep.memory.sourceId;
             } else {
-                if (creep.ticksToLive < 200 && creep.memory.renewals > 1) {
+                if (creep.ticksToLive < 200 && (creep.memory.renewals > 1 || creep.body.length == 8)) {
 		    creep.memory.renewals--;
                     creep.memory.goRenewal = true;
                     creep.memory.placeToBe = creep.pos;
