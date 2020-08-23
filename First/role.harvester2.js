@@ -71,6 +71,8 @@ var roleHarvester2 = {
                         var err = creep.harvest(source);
                         if (err == ERR_NOT_ENOUGH_RESOURCES) {
                             // console.log('Source exhausted');
+                        } else if (err == ERR_TIRED) {
+                            // console.log('Extractor cooling down');
                         } else if (err != OK) {
                             console.log('Harvesting ' + JSON.stringify(source) + ' failed: ' + err);
                         }
@@ -82,7 +84,7 @@ var roleHarvester2 = {
         // console.log('find a place');
         // find a suitable source with a container that is not currently harvested
         var sources = room.find(FIND_SOURCES);
-        sources.forEach(function (source) {
+        sources.forEach(function(source) {
             var structures = room.lookForAtArea(LOOK_STRUCTURES, source.pos.y-1, source.pos.x-1, source.pos.y+1, source.pos.x+1, true);
             structures.forEach(function (structure) {
                 if (structure.structure.structureType == STRUCTURE_CONTAINER) {
@@ -93,6 +95,25 @@ var roleHarvester2 = {
                         return;
                     } else if (creep.pos.isEqualTo(structure.structure.pos)) {
                         creep.memory.sourceId = source.id;
+                        return;
+                    }
+                }
+            });
+        });
+        var extractors = room.find(FIND_MY_STRUCTURES, { filter: { structureType: STRUCTURE_EXTRACTOR } });
+        extractors.forEach(function(extractor) {
+            var structures = room.lookForAtArea(LOOK_STRUCTURES, extractor.pos.y-1, extractor.pos.x-1, extractor.pos.y+1, extractor.pos.x+1, true);
+            structures.forEach(function (structure) {
+                if (structure.structure.structureType == STRUCTURE_CONTAINER) {
+                    var source = room.lookForAt(LOOK_MINERALS, extractor)[0];
+                    if (room.lookForAt(LOOK_CREEPS, structure.x, structure.y).length == 0) {
+                        creep.memory.placeToBe = structure.structure.pos;
+                        creep.memory.sourceId = source.id;
+                        commons.moveTo(creep, structure.structure.pos);
+                        return;
+                    } else if (creep.pos.isEqualTo(structure.structure.pos)) {
+                        creep.memory.sourceId = source.id;
+                        return;
                     }
                 }
             });
