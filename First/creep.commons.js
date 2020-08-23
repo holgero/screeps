@@ -278,7 +278,9 @@ var creepCommons = {
             return;
         }
         var container = creep.pos.findClosestByPath(candidates);
-        creep.memory.containerId = container.id;
+        if (container) {
+            creep.memory.containerId = container.id;
+        }
     },
     
     gotoSpawn: function(creep, room) {
